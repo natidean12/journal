@@ -425,7 +425,7 @@ function render(){
     div.innerHTML=`
       <h2>${b.title} ${b.completed?"🏆":""}</h2>
 
-     <div class="bingo-actions">
+      <div class="bingo-actions">
         <button class="delete-btn" onclick="removeBingo(${b.id})">Excluir</button>
       </div>
 
@@ -444,46 +444,36 @@ function render(){
 
       <div class="bingo-grid" style="grid-template-columns:repeat(${b.size},1fr)">
         ${b.cells.map((c,i)=>`
-          <div class="bingo-cell ${c.done?"done":""}"
-               style="background:${c.done?b.color:"#2a2a3a"}"
-               onclick="toggle(${b.id},${i})">
-
+          <div class="bingo-cell ${c.done?"done":""}" style="background:${c.done?b.color:"#2a2a3a"}">
             <textarea
                 onclick="event.stopPropagation()"
                 onmousedown="event.stopPropagation()"
                 ontouchstart="event.stopPropagation()"
                 oninput="edit(${b.id},${i},this.value)"
                 >${c.text}</textarea>
-
-
           </div>
         `).join("")}
       </div>
     `;
     bingosDiv.appendChild(div);
+
+    // **Adiciona o duplo toque para todas as células**
+    const cells = div.querySelectorAll(".bingo-cell");
+    cells.forEach((cell, i) => {
+      let lastTap = 0;
+      cell.addEventListener("touchend", (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+          toggle(b.id, i); // marca/desmarca a célula
+          e.preventDefault();
+        }
+        lastTap = currentTime;
+      });
+    });
   });
 }
 
-  // Seleciona todas as células do Bingo
-const cells = document.querySelectorAll(".bingo-cell");
-
-// Função para alternar a marcação da célula
-function toggleCell(cell) {
-  cell.classList.toggle("marked");
-}
-
-// Para cada célula, adiciona os eventos
-cells.forEach(cell => {
-  // Para computadores
-  cell.addEventListener("click", () => toggleCell(cell));
-
-  // Para tablets e celulares (touch)
-  cell.addEventListener("pointerdown", (e) => {
-    // Evita disparar dois eventos ao mesmo tempo
-    e.preventDefault();
-    toggleCell(cell);
-  });
-});
 
 
 const paginaAtual = location.pathname.split("/").pop();
