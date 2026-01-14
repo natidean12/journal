@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Reading Journal • Calendário</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1c1c2b">
+<!-- Manifest PWA -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Reading Journal">
+
+<!-- Ícones para iOS -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- Splash screens iOS -->
+<link rel="apple-touch-startup-image" href="screenshots/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2224.png" media="(device-width: 834px) and (device-height: 1112px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+<style>
+  @media (max-width: 600px) {
+  .navbar {
+    justify-content: space-between;
+    padding: 0 12px;
+    overflow-x: auto;
+  white-space: nowrap;
+  }
+
+  .nav-link {
+    font-size: .85rem;
+    padding: 6px 10px;
+  }
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(15, 15, 20, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+}
+
+body {
+  margin: 0;
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14px, 2vw, 16px);
+  background:
+    linear-gradient(rgba(32, 32, 117, 0.75), rgba(135, 135, 199, 0.75)),
+    url("https://img.myloview.com.br/fotomurais/esboce-o-teste-padrao-ou-o-fundo-sem-emenda-dos-livros-do-vintage-esboco-livro-sem-emenda-de-educacao-para-escola-literatura-e-apple-ilustracao-700-149614705.jpg")
+    no-repeat center / cover;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* LINKS */
+.nav-link {
+  color: #aaa;
+  text-decoration: none;
+  font-size: .95rem;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all .25s ease;
+  position: relative;
+   flex-shrink: 0;
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* HOVER */
+.nav-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+}
+
+/* LINK ATIVO */
+.nav-link.active {
+  color: #fff;
+  font-weight: 600;
+  background: rgba(255,255,255,.12);
+}
+
+/* LINHA ATIVA EMBAIXO */
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  background: #7c7cff;
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+
+/* CONTAINER */
+.container {
+  padding: 100px 20px 40px;
+  text-align: center;
+  padding-top: 90px;
+}
+
+/* CALENDÁRIO */
+.calendar-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  max-width: 420px;
+  margin: 20px auto;
+}
+
+.calendar-weekdays span {
+  font-size: 0.85rem;
+  color: #ddd;
+}
+
+.calendar-day {
+  aspect-ratio: 1 / 1;
+  background: #2a2a3a;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  min-height: 44px; /* padrão Apple */
+}
+
+.calendar-day.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.day-number {
+  font-size: 0.8rem;
+}
+
+.emoji {
+  font-size: 1.2rem;
+}
+
+/* ANIMAÇÃO */
+@keyframes pop {
+  0% { transform: scale(0.85); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.calendar-day.marked {
+  animation: pop 0.25s ease;
+}
+
+/* TOOLS */
+.calendar-tools {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,30,.95);
+  padding: 12px 18px;
+  border-radius: 16px;
+  opacity: 0;
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+@media (max-width: 360px) {
+  .calendar-weekdays span {
+    font-size: 0.7rem;
+  }
+
+  .emoji {
+    font-size: 1rem;
+  }
+}
+
+.alphabet-grid {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 20px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <a href="livros.html" class="nav-link">Livros</a>
+  <a href="challenge.html" class="nav-link">Challenge</a>
+  <a href="calendario.html" class="nav-link">Calendário</a>
+  <a href="bingo.html" class="nav-link">Bingo</a>
+  <a href="cores.html" class="nav-link">Cores</a>
+  <a href="favoritos.html" class="nav-link">Favoritos</a>
+  <a href="a-z.html" class="nav-link">A-Z</a>
+</nav>
+
+<div class="container">
+  <h1>📅 Calendário de Leitura</h1>
+
+  <div class="calendar-controls">
+    <button id="prevMonth">◀</button>
+    <h2 id="monthYear"></h2>
+    <button id="nextMonth">▶</button>
+  </div>
+
+  <div class="calendar-weekdays">
+    <span>Dom</span><span>Seg</span><span>Ter</span>
+    <span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+  </div>
+
+  <div id="calendarGrid" class="calendar-grid"></div>
+
+  <div class="calendar-tools">
+    <input type="color" id="colorPicker">
+    <select id="emojiPicker">
+      <option value="📖">📖</option>
+      <option value="⭐">⭐</option>
+      <option value="🔥">🔥</option>
+      <option value="💜">💜</option>
+      <option value="✨">✨</option>
+    </select>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const calendarGrid = document.getElementById("calendarGrid");
+const monthYear = document.getElementById("monthYear");
+const prevMonth = document.getElementById("prevMonth");
+const nextMonth = document.getElementById("nextMonth");
+const colorPicker = document.getElementById("colorPicker");
+const emojiPicker = document.getElementById("emojiPicker");
+const toast = document.getElementById("toast");
+
+let currentDate = new Date();
+
+/* STORAGE */
+function key() {
+  return `calendar-${currentDate.getFullYear()}-${currentDate.getMonth()}`;
+}
+
+function loadData() {
+  return JSON.parse(localStorage.getItem(key())) || {};
+}
+
+function saveData(data) {
+  localStorage.setItem(key(), JSON.stringify(data));
+}
+
+/* TOAST */
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+}
+
+/* RENDER */
+function renderCalendar() {
+  calendarGrid.innerHTML = "";
+  const saved = loadData();
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDay = new Date(year, month + 1, 0).getDate();
+
+  const months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  monthYear.textContent = `${months[month]} ${year}`;
+
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("div");
+    empty.className = "calendar-day empty";
+    calendarGrid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= lastDay; d++) {
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+
+    if (saved[d]) {
+      cell.style.background = saved[d].color;
+      cell.classList.add("marked");
+      cell.innerHTML = `<span class="day-number">${d}</span><span class="emoji">${saved[d].emoji}</span>`;
+    } else {
+      cell.innerHTML = `<span class="day-number">${d}</span>`;
+    }
+
+    cell.onclick = () => {
+      const data = loadData();
+
+      if (data[d]) {
+        delete data[d];
+        cell.style.background = "#2a2a3a";
+        cell.classList.remove("marked");
+        cell.innerHTML = `<span class="day-number">${d}</span>`;
+        showToast("❌ Dia desmarcado");
+      } else {
+        data[d] = {
+          color: colorPicker.value || "#f5a3c7",
+          emoji: emojiPicker.value
+        };
+        cell.style.background = data[d].color;
+        cell.classList.add("marked");
+        cell.innerHTML = `<span class="day-number">${d}</span><span class="emoji">${data[d].emoji}</span>`;
+        showToast("✅ Dia marcado!");
+      }
+
+      saveData(data);
+    };
+
+    calendarGrid.appendChild(cell);
+  }
+}
+
+
+prevMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+};
+
+nextMonth.onclick = () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+};
+
+const paginaAtual = location.pathname.split("/").pop();
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  const href = link.getAttribute("href");
+  link.classList.toggle("active", href === paginaAtual);
+});
+
+renderCalendar();
+</script>
+
+</body>
+</html>

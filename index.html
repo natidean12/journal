@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading Journal</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Manifest PWA -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Reading Journal">
+
+<!-- Ícones para iOS -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- Splash screens iOS -->
+<link rel="apple-touch-startup-image" href="screenshots/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2224.png" media="(device-width: 834px) and (device-height: 1112px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        color: white;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        background:
+         linear-gradient(rgba(15,15,20,0.75), rgba(15,15,20,0.75)),
+    url("https://i.pinimg.com/originals/c7/56/f5/c756f5c5cdaedd837570e0cd59dfad94.png")
+    no-repeat center / cover;
+    }
+
+    button {
+        background: #2a2a3a;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: transform 0.15s ease, background 0.15s ease;
+         min-height: 44px;
+    }
+
+    button:hover {
+        background: #3a3a4f;
+    }
+
+    button:active {
+        transform: scale(0.96);
+    }
+
+    .container {
+        min-height: 100vh;
+        padding: 90px 32px 32px;
+    }
+
+    .container.entrada {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .titulo {
+        font-family: "Playfair Display", serif;
+        font-size: 3.2rem;
+        letter-spacing: 1px;
+        animation:  fadeDown 1s ease forwards;
+    }
+
+    .descricao {
+        font-size: 1.2rem;
+        max-width: 480px;
+        opacity: 0.9;
+        margin-bottom: 40px;
+        }
+
+        .frase {
+            margin-top: 28px;
+            font-family: "Homemade Apple", cursive;
+            font-size: 1.1rem;
+            opacity: 0.85;
+            animation: fade 1.2s ease;
+        }
+
+        .btn-principal {
+            background: linear-gradient(135deg, #f5a3c7, #e88bb8);
+            box-shadow: 0 0 20px rgba(245,163,199,199, 0.45);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-2px);
+            box-shadow:  0 0 28px rgba(245, 163, 199, 0.7);
+        }
+
+        @keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.book-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.fav-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.fav-btn.active {
+  color: #c084fc;
+}
+
+    </style>
+    </head>
+
+<body>
+    
+    <main class="container entrada">
+  <h1 class="titulo">📖 Reading Journal</h1>
+
+  <p class="descricao">
+    Um espaço só seu para registrar leituras,<br>
+    sentimentos e momentos.
+  </p>
+
+  <button id="entrarBtn" class="btn-principal">
+    Entrar na minha estante
+  </button>
+
+  <p class="frase" id="frase">
+    “Um leitor vive mil vidas.”
+  </p>
+</main>
+
+ <script>
+  const btn = document.getElementById("entrarBtn");
+  const fraseEl = document.getElementById("frase");
+
+  /* 🌙 Texto do botão por horário */
+  const hora = new Date().getHours();
+
+  if (hora >= 18 || hora < 6) {
+    btn.textContent = "Entrar para ler à noite 🌙";
+  } else {
+    btn.textContent = "Entrar na minha estante 📚";
+  }
+
+  /* 📖 Frases rotativas */
+  const frases = [
+    "“Um leitor vive mil vidas.”",
+    "“Livros são sonhos em papel.”",
+    "“Ler é viajar sem sair do lugar.”",
+    "“Cada página é um refúgio.”"
+  ];
+
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % frases.length;
+    fraseEl.textContent = frases[index];
+  }, 4000);
+
+  /* 🚪 ENTRAR NO APP */
+  btn.addEventListener("click", () => {
+    window.location.href = "livros.html";
+  });
+</script>
+</body>
+</html>

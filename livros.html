@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading Journal • Livros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1c1c2b">
+<!-- Manifest PWA -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Reading Journal">
+
+<!-- Ícones para iOS -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- Splash screens iOS -->
+<link rel="apple-touch-startup-image" href="screenshots/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2224.png" media="(device-width: 834px) and (device-height: 1112px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px)">
+<link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+</head>
+
+<style>
+
+  @media (max-width: 600px) {
+  .navbar {
+    justify-content: space-between;
+    padding: 0 12px;
+    overflow-x: auto;
+  white-space: nowrap;
+  }
+
+  .nav-link {
+    font-size: .85rem;
+    padding: 6px 10px;
+  }
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(15, 15, 20, 0.92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+}
+
+/* LINKS */
+.nav-link {
+  color: #aaa;
+  text-decoration: none;
+  font-size: .95rem;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all .25s ease;
+  position: relative;
+   flex-shrink: 0;
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* HOVER */
+.nav-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+}
+
+/* LINK ATIVO */
+.nav-link.active {
+  color: #fff;
+  font-weight: 600;
+  background: rgba(255,255,255,.12);
+}
+
+/* LINHA ATIVA EMBAIXO */
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  background: #7c7cff;
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.header h1 {
+  font-size: 2rem;
+}
+
+#openModal {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 2rem;
+  line-height: 0;
+  padding-bottom: 4px;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.filters select,
+.filters button {
+  background: #1c1c2b;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* celular */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* tablet */
+@media (min-width: 481px) and (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* desktop */
+@media (min-width: 901px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* celular */
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 20px;
+    border-radius: 16px;
+  }
+}
+
+
+.book-card {
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.book-card img {
+width: 100%;
+  height: 200px;          /* controla o tamanho */
+  object-fit: cover;     /* corta sem distorcer */
+  border-radius: 12px;
+  display: block;
+  max-width: 100%;
+  max-height: 200px;
+}
+
+#previewImage {
+  max-height: 160px;
+  object-fit: cover;
+}
+
+.upload-cover img {
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+
+.stars {
+  text-align: center;
+  color: gold;
+  margin-top: 6px;
+  font-size: 1.1rem;
+}
+
+.book-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.book-actions button {
+  background: transparent;
+  font-size: 1.4rem;
+  padding: 0;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #1c1c2b;
+  padding: 28px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  animation: slideUp 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.upload-cover {
+  width: 100%;
+  height: 160px;
+  border: 2px dashed #555;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.upload-cover::after {
+  content: "📷 Clique para adicionar capa";
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.upload-cover input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.stars-select {
+  position: relative;
+  z-index: 10;
+}
+
+.stars-select span {
+  font-size: 2.2rem;
+  cursor: pointer;
+  color: #444;
+  margin: 0 2px;
+}
+
+.stars-select span.active {
+  color: gold;
+}
+
+.stars-select span.half {
+  color: gold;
+  position: relative;
+}
+
+.stars-select span.half::after {
+  content: "★";
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: gold;
+}
+
+
+.upload-cover {
+  position: relative;
+  z-index: 1;
+}
+
+.upload-cover img {
+  pointer-events: none;
+}
+
+.status {
+  display: block;
+  text-align: center;
+  font-size: .75rem;
+  opacity: .7;
+}
+
+
+.container {
+  min-height: 100vh;
+  padding: 90px 32px 32px;
+}
+
+.container.entrada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+button {
+  background: #2a2a3a;
+  color: #fff;
+  border: none;
+  padding: 1.0px 1px;
+  border-radius: 14px;
+  cursor: pointer;
+   min-height: 44px;
+}
+
+body {
+  margin: 0;
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14px, 2vw, 16px);
+  background:
+    linear-gradient(rgba(32, 32, 117, 0.75), rgba(135, 135, 199, 0.75)),
+    url("https://img.myloview.com.br/fotomurais/esboce-o-teste-padrao-ou-o-fundo-sem-emenda-dos-livros-do-vintage-esboco-livro-sem-emenda-de-educacao-para-escola-literatura-e-apple-ilustracao-700-149614705.jpg")
+    no-repeat center / cover;
+}
+
+.stats {
+  background: rgba(255,255,255,0.08);
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.stats h3 {
+  margin-top: 0;
+}
+
+.stats p {
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.backup {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+#starsSelect span {
+  font-size: 28px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  color: #ccc;
+}
+
+#starsSelect span.active {
+  color: gold;
+}
+
+#starsSelect span.half {
+  color: #ccc;
+}
+
+#starsSelect span.half::before {
+  content: "★";
+  color: gold;
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+}
+
+.alphabet-grid {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 20px;
+}
+
+
+</style>
+
+<body>
+
+ <nav class="navbar">
+  <a href="livros.html" class="nav-link">Livros</a>
+  <a href="challenge.html" class="nav-link">Challenge</a>
+  <a href="calendario.html" class="nav-link">Calendário</a>
+  <a href="bingo.html" class="nav-link">Bingo</a>
+  <a href="cores.html" class="nav-link">Cores</a>
+  <a href="favoritos.html" class="nav-link">Favoritos</a>
+  <a href="a-z.html" class="nav-link">A-Z</a>
+</nav>
+
+
+
+
+    <main class="container">
+        <header class="header">
+            <h1>📚 Livros</h1>
+            <button id="openModal" type="button">＋</button>
+            </header>
+              
+
+<div class="stats" id="stats">
+    <h3>📊 Estatísticas</h3>
+    <p id="statsTotal"></p>
+    <p id="statsLido"></p>
+    <p id="statsLendo"></p>
+    <p id="statsQuero"></p>
+    <p id="statsFav"></p>
+    <p id="statsMedia"></p>
+</div>
+
+   
+<div class="filters">
+        <select id="filterStatus">
+            <option value="">📖 Todos</option>
+            <option value="lido">Lido</option>
+            <option value="lendo">Lendo</option>
+            <option value="quero">Quero ler</option>
+            </select>
+
+    <select id="filterStars">
+        <option value="">⭐ Todas</option>
+        <option value="5"> 5 ⭐</option>
+        <option value="4.5"> 4.5 ⭐ </option>
+        <option value="4"> 4 ⭐ </option>
+        <option value="3.5"> 3.5 ⭐   </option>
+        <option value="3"> 3 ⭐    </option>
+        <option value="2.5"> 2.5 ⭐   </option>
+        <option value="2"> 2 ⭐        </option>
+        <option value="1.5"> 1.5 ⭐   </option> 
+        <option value="1"> 1 ⭐     </option>  
+        </select>
+
+ <button id="filterFav" type="button">💜</button>
+  </div>
+
+  <section class="grid" id="booksGrid"></section>
+</main>
+
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modalTitle">Novo Livro</h2>
+
+    <label class="upload-cover">
+      <input type="file" id="bookImage" accept="image/*">
+      <img id="previewImage" style="display:none; width:100%; border-radius:12px;">
+    </label>
+
+    <div class="stars-select" id="starsSelect">
+      <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+    </div>
+
+    <select id="statusSelect">
+      <option value="lido">📕 Lido</option>
+      <option value="lendo">📖 Lendo</option>
+      <option value="quero">📘 Quero ler</option>
+    </select>
+
+    <button id="saveBook" type="button">Salvar</button>
+
+    <div class="backup">
+  <button id="exportar">⬇️ Exportar Backup</button>
+  <input type="file" id="importar" accept=".json" hidden>
+  <button id="btnImportar">⬆️ Importar Backup</button>
+</div>
+
+  </div>
+</div>   
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const grid = document.getElementById("booksGrid");
+  const modal = document.getElementById("modal");
+  const openModal = document.getElementById("openModal");
+  const saveBook = document.getElementById("saveBook");
+  const bookImage = document.getElementById("bookImage");
+  const statusSelect = document.getElementById("statusSelect");
+  const preview = document.getElementById("previewImage");
+  const btnExportar = document.getElementById("exportar");
+  const btnImportar = document.getElementById("btnImportar");
+  const inputImportar = document.getElementById("importar");
+
+  const filterStatus = document.getElementById("filterStatus");
+  const filterStars = document.getElementById("filterStars");
+  const filterFav = document.getElementById("filterFav");
+
+  let books = JSON.parse(localStorage.getItem("livros")) || [];
+  let selectedStars = 0;
+  let selectedImage = "";
+  let onlyFav = false;
+  let editId = null;
+
+  /* EXPORTAR */
+btnExportar.onclick = () => {
+  const blob = new Blob(
+    [JSON.stringify(books, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "meus-livros.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* IMPORTAR */
+btnImportar.onclick = () => inputImportar.click();
+
+inputImportar.onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      books = JSON.parse(reader.result);
+      salvar();
+      renderBooks(books);
+      alert("Backup importado com sucesso!");
+    } catch {
+      alert("Arquivo inválido");
+    }
+  };
+  reader.readAsText(file);
+};
+
+  function atualizarEstatisticas(lista) {
+  const total = lista.length;
+  const lido = lista.filter(b => b.status === "lido").length;
+  const lendo = lista.filter(b => b.status === "lendo").length;
+  const quero = lista.filter(b => b.status === "quero").length;
+  const fav = lista.filter(b => b.favorito).length;
+
+  const media =
+    total === 0
+      ? 0
+      : (lista.reduce((s, b) => s + b.estrelas, 0) / total).toFixed(1);
+
+  document.getElementById("statsTotal").innerText = `📚 Total: ${total}`;
+  document.getElementById("statsLido").innerText = `📕 Lidos: ${lido}`;
+  document.getElementById("statsLendo").innerText = `📖 Lendo: ${lendo}`;
+  document.getElementById("statsQuero").innerText = `📘 Quero ler: ${quero}`;
+  document.getElementById("statsFav").innerText = `💜 Favoritos: ${fav}`;
+  document.getElementById("statsMedia").innerText = `⭐ Média: ${media}`;
+}
+
+
+
+function atualizarContador(lista) {
+  contador.innerText = `${lista.length} livros`;
+}
+
+  function salvar() {
+    localStorage.setItem("livros", JSON.stringify(books));
+  }
+
+  /* MODAL */
+  openModal.onclick = () => {
+    modal.style.display = "flex";
+  };
+
+  modal.onclick = e => {
+    if (e.target === modal) modal.style.display = "none";
+  };
+
+  /* ESTRELAS COM MEIA */
+const stars = document.querySelectorAll("#starsSelect span");
+
+stars.forEach((star, i) => {
+  star.addEventListener("click", e => {
+    const rect = star.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+
+    // esquerda = meia estrela | direita = inteira
+    selectedStars = clickX < rect.width / 2
+      ? i + 0.5
+      : i + 1;
+
+    atualizarVisualStars();
+  });
+});
+
+function atualizarVisualStars() {
+  stars.forEach((s, index) => {
+    s.classList.remove("active", "half");
+
+    if (index + 1 <= selectedStars) {
+      s.classList.add("active");
+    } else if (index + 0.5 === selectedStars) {
+      s.classList.add("half");
+    }
+  });
+}
+
+
+
+
+  /* IMAGEM */
+  bookImage.onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    selectedImage = reader.result;
+
+    preview.src = reader.result;
+    preview.style.display = "block";
+    preview.style.maxWidth = "100%";
+    preview.style.maxHeight = "160px";
+    preview.style.objectFit = "cover";
+  };
+  reader.readAsDataURL(file);
+};
+
+
+  /* SALVAR */
+  saveBook.onclick = () => {
+    if (editId) {
+  const index = books.findIndex(b => b.id === editId);
+  if (index !== -1) {
+    books[index].estrelas = selectedStars;
+    books[index].status = statusSelect.value;
+    books[index].capa = selectedImage;
+  }
+  editId = null;
+  salvar();
+  fecharModal();
+  renderBooks(books);
+  return;
+}
+    if (!selectedImage || !selectedStars) {
+      alert("Preencha tudo");
+      return;
+    }
+
+    books.unshift({
+      id: crypto.randomUUID(),
+      capa: selectedImage,
+      estrelas: selectedStars,
+      status: statusSelect.value,
+      favorito: false
+    });
+
+    salvar();
+    fecharModal();
+    renderBooks(books);
+  };
+
+  function fecharModal() {
+  modal.style.display = "none";
+  selectedStars = 0;
+  selectedImage = "";
+  bookImage.value = "";
+
+  preview.src = "";
+  preview.style.display = "none";
+
+ stars.forEach(s => s.classList.remove("active", "half"));
+
+}
+
+
+  /* RENDER */
+  function renderBooks(list) {
+    grid.innerHTML = "";
+
+    if (!list.length) {
+      grid.innerHTML = "<p>Nenhum livro</p>";
+      return;
+    }
+
+    list.forEach(book => {
+      const card = document.createElement("div");
+      card.className = "book-card";
+
+      card.innerHTML = `
+        <img src="${book.capa}">
+        <div class="stars">${renderStars(book.estrelas)}</div>
+
+        <div class="book-actions">
+            <div class="status">${statusIcon(book.status)}</div>
+          <button class="fav">${book.favorito ? "💜" : "🤍"}</button>
+          <button class="edit">✏️</button>
+          <button class="del">🗑️</button>
+          
+        </div>
+      `;
+
+      /* FAVORITO */
+      card.querySelector(".fav").onclick = () => {
+        book.favorito = !book.favorito;
+        salvar();
+        renderBooks(books);
+      };
+
+card.querySelector(".edit").onclick = () => {
+  editId = book.id;
+  selectedStars = book.estrelas;
+  selectedImage = book.capa;
+
+  preview.src = book.capa;
+  preview.style.display = "block";
+  statusSelect.value = book.status;
+
+  atualizarVisualStars();
+  modal.style.display = "flex";
+};
+
+
+      card.querySelector(".del").onclick = () => {
+        books = books.filter(b => b.id !== book.id);
+        salvar();
+        renderBooks(books);
+      };
+
+      grid.appendChild(card);
+    });
+    
+    atualizarEstatisticas(list);
+  }
+
+  
+  
+
+function renderStars(value) {
+  let html = "";
+  const full = Math.floor(value);
+  const half = value % 1 !== 0;
+
+  for (let i = 0; i < full; i++) html += "★";
+  if (half) html += "½";
+
+  return html;
+}
+
+
+function statusIcon(status) {
+  if (status === "lido") return "📕";
+  if (status === "lendo") return "📖";
+  if (status === "quero") return "📘";
+  return "";
+}
+
+
+
+  /* FILTROS */
+  filterStatus.onchange = aplicarFiltros;
+  filterStars.onchange = aplicarFiltros;
+  filterFav.onclick = () => {
+    onlyFav = !onlyFav;
+    aplicarFiltros();
+  };
+
+  function aplicarFiltros() {
+    let filtrados = [...books];
+
+    if (filterStatus.value)
+      filtrados = filtrados.filter(b => b.status === filterStatus.value);
+
+    if (filterStars.value)
+  filtrados = filtrados.filter(
+    b => b.estrelas === Number(filterStars.value)
+  );
+
+    if (onlyFav)
+      filtrados = filtrados.filter(b => b.favorito);
+
+    renderBooks(filtrados);
+  }
+
+  /* PWA */
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+
+const paginaAtual = location.pathname.split("/").pop();
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  const href = link.getAttribute("href");
+  link.classList.toggle("active", href === paginaAtual);
+});
+
+
+  renderBooks(books);
+
+});
+
+</script>
+
+
+</body>
+</html>
+
+
