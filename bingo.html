@@ -464,6 +464,28 @@ function render(){
   });
 }
 
+  // Seleciona todas as células do Bingo
+const cells = document.querySelectorAll(".bingo-cell");
+
+// Função para alternar a marcação da célula
+function toggleCell(cell) {
+  cell.classList.toggle("marked");
+}
+
+// Para cada célula, adiciona os eventos
+cells.forEach(cell => {
+  // Para computadores
+  cell.addEventListener("click", () => toggleCell(cell));
+
+  // Para tablets e celulares (touch)
+  cell.addEventListener("pointerdown", (e) => {
+    // Evita disparar dois eventos ao mesmo tempo
+    e.preventDefault();
+    toggleCell(cell);
+  });
+});
+
+
 const paginaAtual = location.pathname.split("/").pop();
 
 document.querySelectorAll(".nav-link").forEach(link => {
