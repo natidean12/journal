@@ -2,21 +2,19 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Livros • Lux Edition</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
-  <meta name="theme-color" content="#fce4ec">
-  <link rel="manifest" href="manifest.json">
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Moniteca">
+  <meta name="apple-mobile-web-app-title" content="Reading Journal">
   
- <link rel="apple-touch-icon" href="icons/capas.png">
-  
-  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
-  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+  <link rel="apple-touch-icon" href="icons/capas.png">
+  <link rel="manifest" href="manifest.json">
 
+  <link rel="apple-touch-startup-image" href="icons/capas.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3)">
+<link rel="apple-touch-startup-image" href="icons/capas.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)">
+  
+  <title>Minha Biblioteca • Livros</title>
 
 
 <style>
@@ -36,6 +34,8 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .container {
@@ -180,6 +180,10 @@ setInterval(() => {
 btn.addEventListener("click", () => {
   window.location.href = "livros.html";
 });
+
+function voltarParaInicio() {
+    window.location.href = "index.html";
+  }
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
