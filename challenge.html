@@ -2,22 +2,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Livros • Lux Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Challenge • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <meta name="theme-color" content="#fce4ec">
   <link rel="manifest" href="manifest.json">
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Moniteca">
+  <meta name="apple-mobile-web-app-title" content="Livros">
   
- <link rel="apple-touch-icon" href="icons/capas.png">
-  
-  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
-  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
-
-
+  <link rel="apple-touch-icon" href="icons/capas.png">
   
   <style>
     :root {
@@ -38,9 +33,12 @@
       background-attachment: fixed;
       display: flex;
       min-height: 100vh;
+      /* Ajuste para o iPhone 16 Pro Max não cortar o topo e o fundo */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* NAVBAR */
+    /* NAVBAR LATERAL (iPad) */
     .navbar {
       width: var(--sidebar-width);
       background: rgba(255, 255, 255, 0.4);
@@ -53,7 +51,15 @@
     .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px 20px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
     .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
 
-    .main-content { margin-left: var(--sidebar-width); padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+    /* CONTENT AREA */
+    .main-content { 
+      margin-left: var(--sidebar-width); 
+      padding: 40px; 
+      width: 100%; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+    }
 
     /* DASHBOARD CHALLENGE */
     .challenge-card {
@@ -72,17 +78,8 @@
       gap: 15px;
       margin-bottom: 20px;
     }
-    .trophy {
-      font-size: 1.8rem;
-      filter: grayscale(1);
-      opacity: 0.3;
-      transition: 0.5s;
-    }
-    .trophy.unlocked {
-      filter: grayscale(0);
-      opacity: 1;
-      transform: scale(1.2);
-    }
+    .trophy { font-size: 1.8rem; filter: grayscale(1); opacity: 0.3; transition: 0.5s; }
+    .trophy.unlocked { filter: grayscale(0); opacity: 1; transform: scale(1.2); }
 
     .progress-bar-container {
       height: 12px;
@@ -106,7 +103,7 @@
       width: 100%;
       max-width: 600px;
       margin-top: 30px;
-      padding-bottom: 120px;
+      padding-bottom: 50px; /* Ajustado */
     }
     .item {
       aspect-ratio: 1;
@@ -127,7 +124,6 @@
       box-shadow: 0 5px 15px rgba(240, 98, 146, 0.3);
     }
 
-    /* PREVISÃO */
     .prediction-box {
       margin-top: 15px;
       padding: 10px;
@@ -150,18 +146,36 @@
     }
     #resetBtn.warning { background: #ff5252; color: white; border: none; }
 
+    /* AJUSTES PARA IPHONE 16 PRO MAX */
     @media (max-width: 440px) {
-      .navbar { width: 100%; height: 75px; top: auto; bottom: 0; flex-direction: row; padding: 0 10px; justify-content: space-around; }
+      .navbar { 
+        width: 100%; 
+        height: calc(75px + env(safe-area-inset-bottom)); 
+        top: auto; 
+        bottom: 0; 
+        flex-direction: row; 
+        padding: 10px 10px env(safe-area-inset-bottom); 
+        justify-content: space-around; 
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+      }
       .nav-brand { display: none; }
-      .main-content { margin-left: 0; padding: 20px 20px 100px; }
-      .nav-link { font-size: 0.7rem; flex-direction: column; gap: 5px; padding: 10px; }
+      .main-content { 
+        margin-left: 0; 
+        padding: 20px 20px calc(100px + env(safe-area-inset-bottom)); 
+      }
+      .nav-link { font-size: 0.65rem; flex-direction: column; gap: 4px; padding: 5px; }
+      .nav-link span { font-size: 1.3rem; }
+      .challenge-grid {
+        grid-template-columns: repeat(6, 1fr); /* Melhor visualização no iPhone */
+      }
     }
   </style>
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-brand">Biblioteca</div>
+    <div class="nav-brand">Lux Edition</div>
     <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
     <a href="challenge.html" class="nav-link active"><span>🏆</span> Challenge</a>
     <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
@@ -185,7 +199,7 @@
       
       <div style="margin: 10px 0;">
         <span style="color:#888;">Meta:</span>
-        <input type="number" id="goalInput" value="50" style="width:60px; border:none; font-weight:bold; color:var(--deep-pink); text-align:center;">
+        <input type="number" id="goalInput" value="50" style="width:60px; border:none; font-weight:bold; color:var(--deep-pink); background:transparent; text-align:center;">
       </div>
 
       <div class="progress-bar-container">
@@ -197,7 +211,7 @@
       </div>
 
       <div class="prediction-box" id="prediction">
-        Marque seu primeiro livro para ver a previsão!
+        Marque seu primeiro livro!
       </div>
 
       <button id="resetBtn">Zerar Tudo</button>
@@ -250,18 +264,16 @@
       const pct = (feitos / meta) * 100;
       bar.style.width = pct + '%';
 
-      // Troféus
       document.getElementById('t1').classList.toggle('unlocked', feitos >= 10);
       document.getElementById('t2').classList.toggle('unlocked', feitos >= 25);
       document.getElementById('t3').classList.toggle('unlocked', feitos >= 50);
       document.getElementById('t4').classList.toggle('unlocked', feitos >= meta && feitos > 0);
 
-      // Previsão Simples
       if (feitos > 0) {
         const diaDoAno = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
         const taxa = feitos / diaDoAno;
         const totalFinal = Math.round(taxa * 365);
-        predictionTxt.innerHTML = `✨ Ritmo atual: Você lerá <b>${totalFinal}</b> livros até o fim do ano!`;
+        predictionTxt.innerHTML = `✨ Ritmo: Você lerá <b>${totalFinal}</b> livros até o fim do ano!`;
       }
     }
 
@@ -291,9 +303,8 @@
     };
     
     if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
-      .then(() => console.log("Service Worker Ativo!"));
-  }
+        navigator.serviceWorker.register('./sw.js');
+    }
 
     render();
   </script>
