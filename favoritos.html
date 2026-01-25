@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Livros • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="manifest" href="manifest.json">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Moniteca">
+  
+ <link rel="apple-touch-icon" href="icons/capas.png">
+  
+  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+
+  <style>
+    :root {
+      --primary-pink: #fce4ec;
+      --deep-pink: #f06292;
+      --sidebar-desktop: 260px;
+      --sidebar-mobile: 70px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
+        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR LATERAL */
+    .navbar {
+      width: var(--sidebar-desktop);
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; flex-direction: column; padding: 40px 20px; position: fixed; height: 100vh; z-index: 1000;
+    }
+    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; transition: 0.3s; }
+    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
+
+    .main-content { 
+      margin-left: var(--sidebar-desktop); 
+      padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; 
+    }
+
+    /* GRID */
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 25px; width: 100%; max-width: 1000px;
+    }
+
+    .month-card {
+      background: white; padding: 12px; border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; cursor: pointer;
+    }
+
+    .month-name { font-weight: 800; color: var(--deep-pink); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
+
+    .photo-frame {
+      width: 100%; aspect-ratio: 2/3; background: #fdf2f5; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      border: 1px dashed #f48fb1;
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+    .book-title { margin-top: 10px; font-size: 0.8rem; color: #555; font-weight: 600; min-height: 1.2em; }
+
+    @media (max-width: 850px) {
+      .navbar { width: var(--sidebar-mobile); padding: 20px 10px; }
+      .nav-brand, .link-text { display: none; }
+      .main-content { margin-left: var(--sidebar-mobile); padding: 20px; }
+      .nav-link { justify-content: center; }
+      .month-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">Biblioteca</div>
+    <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
+    <a href="challenge.html" class="nav-link "><span>🏆</span> Challenge</a>
+    <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
+    <a href="favoritos.html" class="nav-link active"><span>💜</span> Favoritos</a>
+    <a href="bingo.html" class="nav-link"><span>🎯</span> Bingo</a>
+    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
+    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
+    <a href="roleta.html" class="nav-link "><span>📍</span> Roleta</a>
+  </nav>
+
+  <main class="main-content">
+    <h1 style="color:var(--deep-pink); margin-bottom: 30px;">Melhor do Mês</h1>
+    <div class="month-grid" id="monthGrid"></div>
+  </main>
+
+  <script>
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    let estadoMeses = JSON.parse(localStorage.getItem("mesesEstado") || "{}");
+
+    function render() {
+      const grid = document.getElementById("monthGrid");
+      grid.innerHTML = "";
+
+      months.forEach(month => {
+        const card = document.createElement("div");
+        card.className = "month-card";
+
+        // Título do mês
+        const titulo = document.createElement("div");
+        titulo.className = "month-name";
+        titulo.textContent = month;
+        card.appendChild(titulo);
+
+        // Moldura da foto
+        const frame = document.createElement("div");
+        frame.className = "photo-frame";
+        
+        const info = estadoMeses[month]; // Pega o objeto {img, title} ou apenas a string se for código antigo
+        
+        if (info) {
+          const img = document.createElement("img");
+          img.src = typeof info === 'string' ? info : info.img;
+          frame.appendChild(img);
+        } else {
+          frame.innerHTML = '<span style="font-size:2rem; opacity:0.3;">📸</span>';
+        }
+        card.appendChild(frame);
+
+        // Nome do Livro
+        const bookLabel = document.createElement("div");
+        bookLabel.className = "book-title";
+        bookLabel.textContent = (info && info.title) ? info.title : "";
+        card.appendChild(bookLabel);
+
+        let clickTimer = null;
+
+        // CLIQUE SIMPLES (Adicionar)
+        card.addEventListener("click", () => {
+          if (clickTimer) return;
+          clickTimer = setTimeout(() => {
+            clickTimer = null;
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = () => {
+              const file = input.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = () => {
+                const nomeLivro = prompt("Nome do livro:");
+                estadoMeses[month] = {
+                  img: reader.result,
+                  title: nomeLivro || "" // Se cancelar, fica vazio (sem o "Sem título")
+                };
+                localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
+                render();
+              };
+              reader.readAsDataURL(file);
+            };
+            input.click();
+          }, 250);
+        });
+
+        // DUPLO CLIQUE (Apagar) - Igual ao seu código antigo
+        card.addEventListener("dblclick", (e) => {
+          e.stopPropagation();
+          if (clickTimer) {
+            clearTimeout(clickTimer);
+            clickTimer = null;
+          }
+          if (estadoMeses[month]) {
+            delete estadoMeses[month];
+            localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
+            render();
+          }
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
+      .then(() => console.log("Service Worker Ativo!"));
+  }
+  
+    render();
+  </script>
+</body>
+</html>

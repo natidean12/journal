@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Livros • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="manifest" href="manifest.json">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Moniteca">
+  
+ <link rel="apple-touch-icon" href="icons/capas.png">
+  
+  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+
+  <style>
+    :root {
+      --primary-pink: #fce4ec;
+      --deep-pink: #f06292;
+      --sidebar-desktop: 260px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+    body {
+      margin: 0; font-family: 'Segoe UI', system-ui, sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
+        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
+      display: flex; min-height: 100vh; color: #4a4a4a;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      width: var(--sidebar-desktop); background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; flex-direction: column; padding: 40px 20px; position: fixed; height: 100vh; z-index: 1000;
+    }
+    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
+    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
+
+    .main-content { margin-left: var(--sidebar-desktop); padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+    /* GERENCIADOR */
+    .manager-card { width: 100%; max-width: 500px; background: white; padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .selector-group { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding: 10px 0; }
+    
+    .wheel-tab {
+      padding: 12px 25px; background: #f8f8f8; border-radius: 15px; 
+      cursor: pointer; font-weight: 800; white-space: nowrap; transition: 0.2s;
+      border: 2px solid transparent; color: #888;
+    }
+    .wheel-tab.active { background: var(--deep-pink); color: white; border-color: white; box-shadow: 0 5px 15px rgba(240, 98, 146, 0.3); }
+
+    /* ROLETA */
+    .wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 20px 0; }
+    .pointer {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 35px; height: 45px; background: #333; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100;
+    }
+    canvas#wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid white; transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1); background: white; }
+
+    .btn-spin {
+      background: var(--deep-pink); color: white; border: none;
+      padding: 18px 60px; border-radius: 35px; font-size: 1.3rem; font-weight: 800;
+      cursor: pointer; box-shadow: 0 10px 25px rgba(240, 98, 146, 0.3); margin-bottom: 25px;
+    }
+
+    /* LISTA */
+    .book-list-container { width: 100%; max-width: 500px; background: rgba(255,255,255,0.5); padding: 25px; border-radius: 30px; backdrop-filter: blur(10px); }
+    .input-box { display: flex; gap: 10px; margin-bottom: 20px; }
+    input { flex: 1; padding: 15px; border-radius: 15px; border: none; outline: none; font-weight: 600; }
+    
+    .book-item {
+      background: white; margin-bottom: 10px; padding: 15px 20px;
+      border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; font-weight: 600; transition: 0.2s; border: 2px solid transparent;
+    }
+    .book-item.drawn { opacity: 0.4; text-decoration: line-through; background: #f0f0f0; }
+
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-content { background: white; padding: 40px; border-radius: 40px; text-align: center; }
+
+    @media (max-width: 850px) {
+      .navbar { width: 75px; padding: 20px 5px; }
+      .nav-brand, .link-text { display: none; }
+      .main-content { margin-left: 75px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">Biblioteca</div>
+    <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
+    <a href="challenge.html" class="nav-link "><span>🏆</span> Challenge</a>
+    <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
+    <a href="favoritos.html" class="nav-link"><span>💜</span> Favoritos</a>
+    <a href="bingo.html" class="nav-link"><span>🎯</span> Bingo</a>
+    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
+    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
+    <a href="roleta.html" class="nav-link active"><span>📍</span> Roleta</a>
+  </nav>
+
+  <main class="main-content">
+    <h1 style="color:var(--deep-pink); font-weight: 900;">Roletas Lux</h1>
+    <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Toque 2x rápido no nome para apagar</p>
+    
+    <div class="manager-card">
+      <div class="selector-group" id="wheelTabs"></div>
+      <div class="input-box">
+        <input type="text" id="newWheelInput" placeholder="Nova roleta...">
+        <button onclick="addWheel()" style="background:var(--deep-pink); color:white; border:none; border-radius:12px; padding:10px 20px; font-weight:bold">Criar</button>
+      </div>
+    </div>
+
+    <div class="wheel-wrapper">
+      <div class="pointer"></div>
+      <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    </div>
+
+    <button class="btn-spin" id="spinBtn" onclick="spinWheel()">GIRAR!</button>
+
+    <div class="book-list-container">
+      <div class="input-box">
+        <input type="text" id="bookInput" placeholder="Adicionar livro...">
+        <button onclick="addItem()" style="background:var(--deep-pink); color:white; border:none; border-radius:12px; padding:0 20px; font-weight:bold">+</button>
+      </div>
+      <div id="itemList"></div>
+    </div>
+  </main>
+
+  <div class="modal" id="modal" onclick="this.style.display='none'">
+    <div class="modal-content">
+      <h2 style="color:#aaa">SORTEADO!</h2>
+      <h1 id="winnerName" style="color:var(--deep-pink); font-size: 2.5rem; margin: 20px 0;">---</h1>
+      <button class="btn-spin" style="margin:0; font-size: 1rem;">FECHAR</button>
+    </div>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem("moniteca_multi_final") || '[{"name":"Principal","items":[]}]');
+    let activeIdx = 0;
+    let rotation = 0;
+    let lastTap = 0; 
+
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function save() {
+      localStorage.setItem("moniteca_multi_final", JSON.stringify(data));
+      render();
+    }
+
+    function handleDoubleTap(callback) {
+      const now = new Date().getTime();
+      const timesince = now - lastTap;
+      if ((timesince < 350) && (timesince > 0)) {
+        callback();
+      }
+      lastTap = now;
+    }
+
+    function addWheel() {
+      const input = document.getElementById("newWheelInput");
+      if (input.value.trim()) {
+        data.push({ name: input.value, items: [] });
+        activeIdx = data.length - 1;
+        input.value = "";
+        save();
+      }
+    }
+
+    function addItem() {
+      const input = document.getElementById("bookInput");
+      if (input.value.trim()) {
+        data[activeIdx].items.push({ name: input.value, active: true });
+        input.value = "";
+        save();
+      }
+    }
+
+    function render() {
+      const tabs = document.getElementById("wheelTabs");
+      tabs.innerHTML = "";
+      data.forEach((wheel, i) => {
+        const tab = document.createElement("div");
+        tab.className = `wheel-tab ${i === activeIdx ? 'active' : ''}`;
+        tab.innerText = wheel.name;
+        
+        tab.onclick = () => { 
+          handleDoubleTap(() => {
+            if(data.length > 1) {
+              data.splice(i, 1);
+              activeIdx = 0;
+              save();
+            }
+          });
+          activeIdx = i;
+          render();
+        };
+        tabs.appendChild(tab);
+      });
+
+      const list = document.getElementById("itemList");
+      list.innerHTML = "";
+      data[activeIdx].items.forEach((item, i) => {
+        const div = document.createElement("div");
+        div.className = `book-item ${item.active ? '' : 'drawn'}`;
+        div.innerHTML = `<span>${item.name}</span> <span>${item.active ? '⚪' : '✅'}</span>`;
+        
+        div.onclick = () => {
+          handleDoubleTap(() => {
+            data[activeIdx].items.splice(i, 1);
+            save();
+          });
+        };
+        list.appendChild(div);
+      });
+
+      drawWheel();
+    }
+
+    function drawWheel() {
+      const activeItems = data[activeIdx].items.filter(item => item.active);
+      const centerX = 250; const centerY = 250; const radius = 240;
+      ctx.clearRect(0, 0, 500, 500);
+
+      if (activeItems.length === 0) {
+        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#ccc"; ctx.textAlign = "center"; ctx.font = "20px sans-serif";
+        ctx.fillText("Vazio", centerX, centerY);
+        return;
+      }
+
+      const arc = (Math.PI * 2) / activeItems.length;
+      activeItems.forEach((item, i) => {
+        const angle = i * arc;
+        ctx.fillStyle = i % 2 === 0 ? "#f06292" : "#fce4ec";
+        ctx.beginPath(); ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + arc); ctx.fill();
+        ctx.save();
+        ctx.translate(centerX, centerY); ctx.rotate(angle + arc/2);
+        ctx.fillStyle = i % 2 === 0 ? "white" : "#f06292";
+        ctx.font = "bold 24px Segoe UI"; ctx.textAlign = "right";
+        ctx.fillText(item.name.substring(0, 16), radius - 30, 10);
+        ctx.restore();
+      });
+    }
+
+    function spinWheel() {
+      const activeItems = data[activeIdx].items.filter(item => item.active);
+      if (activeItems.length < 2) return alert("Adicione 2 livros!");
+
+      const btn = document.getElementById("spinBtn");
+      btn.disabled = true;
+      rotation += (5 + Math.random() * 5) * 360;
+      canvas.style.transform = `rotate(${rotation}deg)`;
+
+      setTimeout(() => {
+        const actualDeg = rotation % 360;
+        const arcSize = 360 / activeItems.length;
+        const index = Math.floor((360 - actualDeg) / arcSize) % activeItems.length;
+        const winner = activeItems[index];
+
+        document.getElementById("winnerName").innerText = winner.name;
+        document.getElementById("modal").style.display = "flex";
+        winner.active = false;
+        
+        setTimeout(() => { save(); btn.disabled = false; }, 500);
+      }, 5000);
+    }
+
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
+      .then(() => console.log("Service Worker Ativo!"));
+  }
+  
+    render();
+  </script>
+</body>
+</html>

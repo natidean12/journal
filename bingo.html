@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Livros • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="manifest" href="manifest.json">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Moniteca">
+  
+ <link rel="apple-touch-icon" href="icons/capas.png">
+  
+  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
+
+  <style>
+    :root {
+      --primary-pink: #fce4ec;
+      --deep-pink: #f06292;
+      --sidebar-desktop: 260px;
+      --sidebar-mobile: 70px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
+        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
+      display: flex;
+      min-height: 100vh;
+      color: #4a4a4a;
+      overflow-x: hidden; /* Evita scroll lateral por confetes */
+    }
+
+    /* NAVBAR LATERAL LUX */
+    .navbar {
+      width: var(--sidebar-desktop);
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; flex-direction: column; padding: 40px 20px; position: fixed; height: 100vh; z-index: 1000;
+      transition: width 0.3s ease;
+    }
+    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; transition: 0.3s; }
+    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
+    .link-text { transition: opacity 0.3s ease; } /* Para esconder texto no mobile */
+
+
+    .main-content { 
+      margin-left: var(--sidebar-desktop); 
+      padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; 
+      transition: margin-left 0.3s ease;
+    }
+
+    /* CONTROLES (TOPO) */
+    .bingo-controls {
+      background: white; padding: 20px; border-radius: 25px;
+      display: flex; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      margin-bottom: 30px; width: 100%; max-width: 600px;
+    }
+    .bingo-controls input, .bingo-controls select { border: 1px solid #eee; padding: 10px; border-radius: 12px; outline: none; flex: 1; }
+    .btn-create { background: var(--deep-pink); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
+    /* CARDS INDIVIDUAIS DO BINGO */
+    .bingo-card {
+      background: white; padding: 25px; border-radius: 30px;
+      margin-bottom: 30px; width: 100%; max-width: 600px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .bingo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    
+    .delete-btn { 
+      background: #ffeded; color: #ff5c5c; border: none; padding: 8px 15px; 
+      border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.75rem;
+      transition: 0.2s;
+    }
+    .delete-btn:active { background: #ffcfcf; }
+
+    /* GRID DO BINGO */
+    .bingo-grid { display: grid; gap: 8px; margin-top: 20px; }
+    .bingo-cell {
+      aspect-ratio: 1; background: #fafafa; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; border: 1px solid #eee; padding: 5px;
+    }
+    .bingo-cell.done::after {
+      content: "✓"; position: absolute; font-size: 1.8rem; color: rgba(0,0,0,0.1); font-weight: bold; pointer-events: none;
+    }
+    .bingo-cell.sorteada {
+      animation: sorteio 0.5s infinite alternate;
+      border: 3px solid #ffca28; /* Borda dourada para sorteio */
+    }
+    @keyframes sorteio {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+
+    .bingo-cell textarea {
+      width: 100%; height: 100%; background: transparent; border: none; resize: none;
+      text-align: center; font-size: 0.75rem; font-weight: 600; color: inherit; outline: none;
+    }
+
+    /* PROGRESSO */
+    .progress-bar { height: 8px; background: #f0f0f0; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+    .progress-fill { height: 100%; transition: 0.5s; }
+
+    /* SELETOR DE CORES */
+    .color-dots { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+    .dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    /* BOTÕES DE AÇÃO DO BINGO INDIVIDUAL */
+    .bingo-actions-bottom {
+      display: flex; justify-content: center; gap: 15px; margin-top: 25px;
+    }
+    .bingo-actions-bottom button {
+      background: #f0f0f0; color: #7d7d7d; border: none; padding: 10px 18px;
+      border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 0.8rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.2s;
+    }
+    .bingo-actions-bottom button:hover { background: #e0e0e0; }
+
+    /* TOOLTIP / BALÃO DE DICA (LONGO CLIQUE) */
+    .cell-tooltip {
+      position: absolute;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      z-index: 1001;
+      bottom: calc(100% + 10px); /* Acima da célula */
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: normal;
+      min-width: 180px;
+      max-width: 250px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .cell-tooltip.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-5px);
+    }
+    .cell-tooltip::after { /* Seta para baixo */
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      transform: translateX(-50%);
+      border-width: 8px;
+      border-style: solid;
+      border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+    }
+
+    /* PARTÍCULAS DE CONFETE */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: var(--color);
+      top: var(--y);
+      left: var(--x);
+      opacity: 0;
+      transform: scale(0);
+      animation: explode 1s forwards;
+      border-radius: 50%;
+      z-index: 9999;
+    }
+
+    @keyframes explode {
+      0% {
+        opacity: 1;
+        transform: scale(0) translate(0, 0);
+      }
+      10% {
+        opacity: 1;
+        transform: scale(1) translate(0, 0);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.5) translate(var(--translateX), var(--translateY)) rotate(var(--rotate)) ;
+      }
+    }
+
+
+    /* ESTILOS PARA MODO DE VISUALIZAÇÃO */
+    body.view-mode .navbar,
+    body.view-mode .bingo-controls,
+    body.view-mode .delete-btn,
+    body.view-mode .bingo-actions-bottom button:not(.view-toggle-btn),
+    body.view-mode .color-dots,
+    body.view-mode .bingo-cell textarea,
+    body.view-mode .bingo-card h2 + button /* Botão Apagar */
+    {
+      display: none !important;
+    }
+    body.view-mode .main-content {
+      margin-left: 0;
+      padding-top: 20px;
+    }
+    body.view-mode .bingo-card {
+      box-shadow: none;
+      border: 1px solid #eee; /* Linha sutil para cards no modo view */
+      padding: 15px;
+      border-radius: 15px;
+    }
+    body.view-mode .bingo-cell.done::after {
+      color: rgba(0,0,0,0.05); /* Check mais sutil no modo view */
+    }
+    body.view-mode .view-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--deep-pink);
+      color: white;
+      z-index: 1000;
+      padding: 12px 20px;
+      border-radius: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+
+    @media (max-width: 850px) {
+      .navbar { width: var(--sidebar-mobile); padding: 20px 10px; }
+      .nav-brand, .link-text { display: none; }
+      .main-content { margin-left: var(--sidebar-mobile); padding: 20px; }
+      .nav-link { justify-content: center; }
+      .bingo-controls { flex-direction: column; }
+      body.view-mode .main-content { margin-left: 0; padding-top: 20px; }
+      body.view-mode .view-toggle-btn {
+         right: 10px;
+         bottom: 10px;
+         padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">Biblioteca</div>
+    <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
+    <a href="challenge.html" class="nav-link "><span>🏆</span> Challenge</a>
+    <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
+    <a href="favoritos.html" class="nav-link"><span>💜</span> Favoritos</a>
+    <a href="bingo.html" class="nav-link active"><span>🎯</span> Bingo</a>
+    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
+    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
+    <a href="roleta.html" class="nav-link "><span>📍</span> Roleta</a>
+  </nav>
+
+  <main class="main-content">
+    <h1 style="color:var(--deep-pink)">Bingo Literário</h1>
+
+    <div class="bingo-controls">
+      <input id="titleInput" placeholder="Nome do Bingo">
+      <select id="sizeSelect">
+        <option value="3">3x3</option>
+        <option value="4">4x4</option>
+        <option value="5">5x5</option>
+      </select>
+      <button class="btn-create" onclick="addBingo()">Criar</button>
+    </div>
+
+    <div id="bingosContainer" style="width: 100%;"></div>
+
+    <button class="view-toggle-btn" onclick="toggleViewMode()">Modo Visualização</button>
+  </main>
+
+  <script>
+    const STORAGE = "moniteca_bingos_v3"; // Nova versão para evitar conflitos
+    const colors = ["#f8bbd0", "#b2ebf2", "#c8e6c9", "#fff9c4", "#d1c4e9"];
+    let bingos = JSON.parse(localStorage.getItem(STORAGE)) || [];
+
+    // --- FUNÇÕES DE UTILIDADE ---
+    function save() { localStorage.setItem(STORAGE, JSON.stringify(bingos)); }
+
+    function getBingoById(id) { return bingos.find(b => b.id === id); }
+
+    function getRandomColor() {
+      const allConfettiColors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722', '#795548', '#9e9e9e', '#607d8b'];
+      return allConfettiColors[Math.floor(Math.random() * allConfettiColors.length)];
+    }
+
+    function createConfetti(x, y, count = 50) {
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.setProperty('--x', `${x}px`);
+        confetti.style.setProperty('--y', `${y}px`);
+        confetti.style.setProperty('--color', getRandomColor());
+        confetti.style.setProperty('--translateX', `${(Math.random() - 0.5) * 500}px`); // Espalha horizontalmente
+        confetti.style.setProperty('--translateY', `${(Math.random() - 0.5) * 500}px`); // Espalha verticalmente
+        confetti.style.setProperty('--rotate', `${Math.random() * 360}deg`); // Gira aleatoriamente
+        document.body.appendChild(confetti);
+        confetti.addEventListener('animationend', () => confetti.remove());
+      }
+    }
+
+
+    // --- FUNÇÕES DE AÇÃO DO BINGO ---
+    function addBingo() {
+      const titleInput = document.getElementById("titleInput");
+      const title = titleInput.value || "Meu Bingo";
+      const size = parseInt(document.getElementById("sizeSelect").value);
+      bingos.push({
+        id: Date.now(),
+        title: title,
+        size: size,
+        color: colors[0],
+        cells: Array.from({length: size * size}, () => ({text: "", done: false, dateCompleted: null}))
+      });
+      save(); render();
+      titleInput.value = "";
+    }
+
+    function removeBingo(id) {
+      bingos = bingos.filter(b => b.id !== id);
+      save(); render();
+    }
+
+    function updateText(bingoId, cellIdx, text) {
+      const bingo = getBingoById(bingoId);
+      if(bingo) {
+        bingo.cells[cellIdx].text = text;
+        save();
+      }
+    }
+
+    function changeColor(bingoId, color) {
+      const bingo = getBingoById(bingoId);
+      if(bingo) {
+        bingo.color = color;
+        save(); render();
+      }
+    }
+
+    // --- FUNÇÕES DE GAMIFICAÇÃO ---
+
+    function toggleCell(bingoId, cellIdx) {
+      const bingo = getBingoById(bingoId);
+      if(!bingo) return;
+
+      bingo.cells[cellIdx].done = !bingo.cells[cellIdx].done;
+      bingo.cells[cellIdx].dateCompleted = bingo.cells[cellIdx].done ? new Date().toLocaleDateString() : null;
+
+      const doneCount = bingo.cells.filter(c => c.done).length;
+      if (doneCount === bingo.cells.length) {
+        // Obter posição do elemento para a explosão de confetes
+        const cellEl = document.getElementById(`cell-${bingoId}-${cellIdx}`);
+        if (cellEl) {
+          const rect = cellEl.getBoundingClientRect();
+          createConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 80);
+        }
+      }
+      save(); render();
+    }
+
+    let sorteioTimeout = null;
+    function sortearCelula(bingoId) {
+      const bingo = getBingoById(bingoId);
+      if (!bingo) return;
+
+      const notDoneCells = bingo.cells.map((cell, idx) => ({ cell, idx })).filter(item => !item.cell.done && item.cell.text.trim() !== "");
+      if (notDoneCells.length === 0) {
+        alert("Todos os desafios estão completos ou vazios!");
+        return;
+      }
+
+      // Limpa qualquer sorteio anterior
+      document.querySelectorAll('.bingo-cell.sorteada').forEach(el => el.classList.remove('sorteada'));
+      if (sorteioTimeout) clearTimeout(sorteioTimeout);
+
+      let sorteandoIdx = -1;
+      let count = 0;
+      const interval = setInterval(() => {
+        if (sorteandoIdx !== -1) { // Remove a classe do anterior
+          const prevCellEl = document.getElementById(`cell-${bingoId}-${notDoneCells[sorteandoIdx].idx}`);
+          if (prevCellEl) prevCellEl.classList.remove('sorteada');
+        }
+
+        sorteandoIdx = Math.floor(Math.random() * notDoneCells.length);
+        const currentCellEl = document.getElementById(`cell-${bingoId}-${notDoneCells[sorteandoIdx].idx}`);
+        if (currentCellEl) currentCellEl.classList.add('sorteada');
+        
+        count++;
+        if (count > 20) { // Para o sorteio após alguns ciclos
+          clearInterval(interval);
+          sorteioTimeout = setTimeout(() => { // Remove a classe 'sorteada' após um tempo
+            if (currentCellEl) currentCellEl.classList.remove('sorteada');
+            alert(`Sua próxima missão: "${notDoneCells[sorteandoIdx].cell.text}"`);
+          }, 1500); // Mostra o alerta após 1.5s
+        }
+      }, 80); // Velocidade do sorteio
+    }
+
+
+    // --- MODO DE VISUALIZAÇÃO ---
+    function toggleViewMode() {
+      document.body.classList.toggle('view-mode');
+      const btn = document.querySelector('.view-toggle-btn');
+      if (document.body.classList.contains('view-mode')) {
+        btn.textContent = 'Editar';
+      } else {
+        btn.textContent = 'Modo Visualização';
+      }
+      // Re-renderizar para ajustar elementos que dependem do modo
+      render(); 
+    }
+
+
+    // --- RENDERIZAÇÃO PRINCIPAL ---
+    function render() {
+      const container = document.getElementById("bingosContainer");
+      container.innerHTML = "";
+
+      const isViewMode = document.body.classList.contains('view-mode');
+
+      bingos.forEach(b => {
+        const doneCount = b.cells.filter(c => c.done).length;
+        const percent = Math.round((doneCount / b.cells.length) * 100);
+
+        const card = document.createElement("div");
+        card.className = "bingo-card";
+        card.innerHTML = `
+          <div class="bingo-header">
+            <h2 style="color:var(--deep-pink)">${b.title} ${percent === 100 ? '🏆' : ''}</h2>
+            <button class="delete-btn" id="del-${b.id}" style="${isViewMode ? 'display: none;' : ''}">Apagar (2x)</button>
+          </div>
+          
+          <div style="font-size: 0.8rem; font-weight: bold;">Progresso: ${percent}%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${percent}%; background: ${b.color}"></div>
+          </div>
+
+          <div class="bingo-grid" style="grid-template-columns: repeat(${b.size}, 1fr)">
+            ${b.cells.map((cell, i) => `
+              <div class="bingo-cell ${cell.done ? 'done' : ''}" 
+                   id="cell-${b.id}-${i}"
+                   style="background: ${cell.done ? b.color : '#fafafa'}"
+                   data-bingo="${b.id}" data-index="${i}"
+                   tabindex="0" role="button"> <textarea oninput="updateText(${b.id}, ${i}, this.value)" 
+                          style="${isViewMode ? 'pointer-events: none;' : ''}"
+                          >${cell.text}</textarea>
+                <div class="cell-tooltip" id="tooltip-${b.id}-${i}">
+                  ${cell.text}<br>
+                  ${cell.dateCompleted ? `<small>Concluído em: ${cell.dateCompleted}</small>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="color-dots" style="${isViewMode ? 'display: none;' : ''}">
+            ${colors.map(c => `<div class="dot" style="background: ${c}" onclick="changeColor(${b.id}, '${c}')"></div>`).join('')}
+          </div>
+
+          <div class="bingo-actions-bottom" style="${isViewMode ? 'display: none;' : ''}">
+            <button onclick="sortearCelula(${b.id})">Sortear Célula</button>
+          </div>
+        `;
+
+        container.appendChild(card);
+        
+        // --- Event Listeners para cada célula e botão ---
+        
+        // DUPLO CLIQUE NO BOTÃO APAGAR
+        const btnDel = document.getElementById(`del-${b.id}`);
+        if (btnDel) { // Garante que o botão exista (pode ser escondido no view-mode)
+          btnDel.addEventListener('dblclick', function(e) {
+            e.stopPropagation(); // Evita que o evento se propague para o card inteiro
+            removeBingo(b.id);
+          });
+        }
+
+        // DUPLO CLIQUE NA CÉLULA & LONGO CLIQUE PARA DICA
+        b.cells.forEach((cell, i) => {
+          const cellEl = document.getElementById(`cell-${b.id}-${i}`);
+          if (cellEl) {
+            let clickTimer = null;
+            let longPressTimer = null;
+            let isLongPress = false;
+
+            // Para clique normal e duplo clique
+            cellEl.addEventListener('mousedown', (e) => { // Desktop
+                if (e.detail === 1) { // Primeiro clique
+                    clickTimer = setTimeout(() => {
+                        // Não faz nada no clique simples, só permite editar texto
+                    }, 250);
+                    // Inicia timer para longo clique
+                    longPressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        showTooltip(cellEl, cell.text, cell.dateCompleted);
+                    }, 600);
+                }
+            });
+            cellEl.addEventListener('mouseup', () => {
+                clearTimeout(longPressTimer);
+                if (isLongPress) {
+                    hideTooltip();
+                    isLongPress = false;
+                }
+            });
+
+            // Touch events para mobile
+            cellEl.addEventListener('touchstart', () => {
+                longPressTimer = setTimeout(() => {
+                    isLongPress = true;
+                    showTooltip(cellEl, cell.text, cell.dateCompleted);
+                }, 600);
+            });
+            cellEl.addEventListener('touchend', () => {
+                clearTimeout(longPressTimer);
+                if (isLongPress) {
+                    hideTooltip();
+                    isLongPress = false;
+                }
+            });
+
+
+            cellEl.addEventListener('dblclick', function(e) {
+              e.stopPropagation();
+              if (clickTimer) clearTimeout(clickTimer);
+              if (!isViewMode) { // Só permite marcar/desmarcar se NÃO estiver no modo de visualização
+                toggleCell(b.id, i);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    let currentTooltip = null;
+    function showTooltip(targetElement, text, dateCompleted) {
+        if (!text && !dateCompleted) return; // Não mostra tooltip se não tiver texto ou data
+
+        // Remover tooltips anteriores para evitar múltiplos
+        hideTooltip(); 
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'cell-tooltip';
+        tooltip.innerHTML = `${text}<br>${dateCompleted ? `<small>Concluído em: ${dateCompleted}</small>` : ''}`;
+        document.body.appendChild(tooltip);
+        currentTooltip = tooltip;
+
+        // Posicionar tooltip
+        const rect = targetElement.getBoundingClientRect();
+        tooltip.style.left = `${rect.left + rect.width / 2}px`;
+        tooltip.style.top = `${rect.top - 10}px`; // 10px acima do elemento
+
+        // Força o reflow para a transição funcionar
+        tooltip.offsetHeight; 
+        tooltip.classList.add('show');
+    }
+
+    function hideTooltip() {
+        if (currentTooltip) {
+            currentTooltip.classList.remove('show');
+            currentTooltip.addEventListener('transitionend', () => {
+                if (currentTooltip && currentTooltip.parentNode) { // Garante que ainda está no DOM
+                    currentTooltip.parentNode.removeChild(currentTooltip);
+                }
+                currentTooltip = null;
+            }, { once: true });
+        }
+    }
+
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
+      .then(() => console.log("Service Worker Ativo!"));
+  }
+
+    render();
+  </script>
+</body>
+</html>
