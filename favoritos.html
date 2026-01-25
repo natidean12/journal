@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="manifest" href="manifest.json">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  
+  <link rel="apple-touch-icon" href="icons/capas.png">
+
+  <style>
+    :root {
+      --primary-pink: #fce4ec;
+      --deep-pink: #f06292;
+      --sidebar-width: 260px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
+        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
+      min-height: 100vh;
+      display: flex;
+      color: #4a4a4a;
+    }
+
+    /* NAVBAR LATERAL (iPad 10) */
+    .navbar {
+      width: var(--sidebar-width);
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; 
+      flex-direction: column; 
+      padding: 40px 20px; 
+      position: fixed; 
+      height: 100vh; 
+      z-index: 1000;
+    }
+    .nav-brand { font-size: 2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 14px 18px; border-radius: 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; font-weight: 600; transition: 0.3s; }
+    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.1); }
+
+    /* CONTEÚDO PRINCIPAL */
+    .main-content { 
+      margin-left: var(--sidebar-width); /* Empurra o conteúdo para o lado da barra no iPad */
+      padding: 40px; 
+      width: 100%; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* CALENDÁRIO */
+    .calendar-card {
+      background: white;
+      padding: 25px;
+      border-radius: 35px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    }
+
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .calendar-header h2 { color: var(--deep-pink); margin: 0; font-size: 1.3rem; }
+    .btn-nav { background: #fdf2f5; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; color: var(--deep-pink); font-weight: bold; }
+
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #ccc; font-size: 0.7rem; margin-bottom: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+
+    .day {
+      aspect-ratio: 1;
+      background: #fdf2f5;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #888;
+    }
+    .day.marked { background: var(--deep-pink); color: white; }
+    .day-emoji { font-size: 0.9rem; margin-top: 1px; }
+
+    /* TOOLS & STATS */
+    .tools {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+    }
+    select { border: none; background: #fdf2f5; padding: 6px 10px; border-radius: 10px; color: var(--deep-pink); font-weight: bold; outline: none; }
+
+    .status-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      width: 100%;
+      max-width: 450px;
+    }
+    .stat-mini { background: white; padding: 15px; border-radius: 22px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.03); }
+    .stat-mini span { display: block; font-size: 0.65rem; color: #aaa; font-weight: bold; margin-bottom: 5px; }
+    .stat-mini strong { font-size: 1.2rem; color: var(--deep-pink); }
+
+    /* AJUSTE IPHONE 16 PRO MAX */
+    @media (max-width: 440px) {
+      .navbar { 
+        width: 100%; 
+        height: calc(70px + env(safe-area-inset-bottom)); 
+        top: auto; 
+        bottom: 0; 
+        flex-direction: row; 
+        padding: 10px 10px env(safe-area-inset-bottom); 
+        border-right: none;
+        border-top: 1px solid rgba(255,255,255,0.3);
+      }
+      .nav-brand { display: none; }
+      .nav-link { flex-direction: column; gap: 4px; padding: 5px; font-size: 0.6rem; margin-bottom: 0; }
+      .nav-link span { font-size: 1.3rem; }
+
+      .main-content { 
+        margin-left: 0; 
+        padding: calc(20px + env(safe-area-inset-top)) 15px calc(100px + env(safe-area-inset-bottom)); 
+      }
+      .calendar-card { padding: 15px; border-radius: 25px; }
+      .status-box { padding-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">Biblioteca</div>
+    <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
+    <a href="challenge.html" class="nav-link"><span>🏆</span> Challenge</a>
+    <a href="calendario.html" class="nav-link "><span>📅</span> Agenda</a>
+    <a href="favoritos.html" class="nav-link active"><span>💜</span> Favoritos</a>
+    <a href="bingo.html" class="nav-link"><span>🎯</span> Bingo</a>
+    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
+    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
+    <a href="roleta.html" class="nav-link "><span>📍</span> Roleta</a>
+  </nav>
+  <main class="main-content">
+    <div class="calendar-card">
+      <div class="calendar-header">
+        <button class="btn-nav" id="prevMonth">◀</button>
+        <h2 id="monthTitle">Janeiro 2026</h2>
+        <button class="btn-nav" id="nextMonth">▶</button>
+      </div>
+
+      <div class="weekdays">
+        <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+      </div>
+
+      <div class="grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="tools">
+      <span style="font-size: 0.7rem; font-weight: bold; color: #888;">MARCAR:</span>
+      <select id="emojiSelect">
+        <option value="📖">📖 Leitura</option>
+        <option value="✨">✨ Terminei</option>
+        <option value="🔥">🔥 Meta</option>
+        <option value="⭐">⭐ Favorito</option>
+      </select>
+    </div>
+
+    <div class="status-box">
+      <div class="stat-mini">
+        <span>Dias Lidos</span>
+        <strong id="countDays">0</strong>
+      </div>
+      <div class="stat-mini">
+        <span>Streak</span>
+        <strong id="streakCount">0 🔥</strong>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentDate = new Date();
+    const grid = document.getElementById("calendarGrid");
+    const monthTitle = document.getElementById("monthTitle");
+    const emojiSelect = document.getElementById("emojiSelect");
+    
+    let habitData = JSON.parse(localStorage.getItem("moniteca_calendar")) || {};
+
+    function render() {
+      grid.innerHTML = "";
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDay = new Date(year, month + 1, 0).getDate();
+      
+      const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      monthTitle.innerText = `${monthNames[month]} ${year}`;
+
+      for (let i = 0; i < firstDay; i++) {
+        grid.appendChild(document.createElement("div"));
+      }
+
+      for (let d = 1; d <= lastDay; d++) {
+        const dayKey = `${year}-${month}-${d}`;
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "day";
+        if (habitData[dayKey]) {
+          dayDiv.classList.add("marked");
+          dayDiv.innerHTML = `${d}<span class="day-emoji">${habitData[dayKey]}</span>`;
+        } else {
+          dayDiv.innerText = d;
+        }
+
+        dayDiv.onclick = () => {
+          if (habitData[dayKey]) {
+            delete habitData[dayKey];
+          } else {
+            habitData[dayKey] = emojiSelect.value;
+          }
+          localStorage.setItem("moniteca_calendar", JSON.stringify(habitData));
+          render();
+        };
+        grid.appendChild(dayDiv);
+      }
+      updateStats();
+    }
+
+    function updateStats() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const days = Object.keys(habitData).filter(key => key.startsWith(`${year}-${month}-`)).length;
+      document.getElementById("countDays").innerText = days;
+
+      let streak = 0;
+      let checkDate = new Date();
+      while (true) {
+        let key = `${checkDate.getFullYear()}-${checkDate.getMonth()}-${checkDate.getDate()}`;
+        if (habitData[key]) {
+          streak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+      document.getElementById("streakCount").innerText = streak + " 🔥";
+    }
+
+    document.getElementById("prevMonth").onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); render(); };
+    document.getElementById("nextMonth").onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); render(); };
+
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
+    render();
+  </script>
+</body>
+</html>

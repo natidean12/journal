@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading Journal • Lux</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <meta name="theme-color" content="#fce4ec">
+  <link rel="manifest" href="manifest.json">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Livros">
+  <link rel="apple-touch-icon" href="icons/capas.png">
+  
+  <style>
+    :root {
+      --primary-pink: #f8bbd0;
+      --deep-pink: #f06292;
+      --sidebar-width: 280px;
+      --gold: #ffca28;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      color: #4a4a4a;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: 
+        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
+        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
+      display: flex;
+      min-height: 100vh;
+      /* Ajuste para Dynamic Island e barra de gestos */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* NAVBAR LATERAL (iPad) */
+    .navbar {
+      width: var(--sidebar-width);
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex; 
+      flex-direction: column; 
+      padding: 40px 20px; 
+      position: fixed; 
+      height: 100vh; 
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 14px 18px; border-radius: 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; font-weight: 600; transition: 0.3s; }
+    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
+
+    /* CONTENT */
+    .main-content { margin-left: var(--sidebar-width); padding: 120px 40px 40px; width: 100%; }
+    
+    .top-bar { 
+      position: fixed; 
+      top: 0; 
+      right: 0; 
+      left: var(--sidebar-width); 
+      height: calc(80px + env(safe-area-inset-top)); 
+      background: rgba(255, 255, 255, 0.2); 
+      backdrop-filter: blur(10px); 
+      display: flex; 
+      align-items: center; 
+      justify-content: flex-end; 
+      padding: env(safe-area-inset-top) 40px 0; 
+      z-index: 900; 
+    }
+    .pages-badge { background: linear-gradient(135deg, var(--deep-pink), #f48fb1); color: white; padding: 10px 22px; border-radius: 50px; font-weight: 800; box-shadow: 0 10px 20px rgba(240, 98, 146, 0.2); }
+
+    /* STATS */
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 40px; }
+    .stat-card { background: white; padding: 20px; border-radius: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+    .stat-card strong { display: block; font-size: 1.6rem; color: var(--deep-pink); }
+
+    /* GRID & CARDS */
+    .year-header { font-size: 1.8rem; margin: 40px 0 20px; color: #6a6a6a; display: flex; align-items: center; gap: 15px; }
+    .year-header::after { content: ""; flex: 1; height: 2px; background: rgba(0,0,0,0.05); }
+    .grid { display: grid; gap: 25px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+    .book-card { background: white; border-radius: 30px; padding: 12px; transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+    .book-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 22px; background: #fdf2f5; }
+    
+    .stars { color: var(--gold); margin: 12px 0 8px; font-size: 1.1rem; display: flex; justify-content: center; gap: 2px; }
+    
+    #addBtn { 
+        position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; border-radius: 22px; 
+        background: linear-gradient(135deg, var(--deep-pink), #f48fb1); color: white; font-size: 2.2rem; 
+        border: none; cursor: pointer; box-shadow: 0 15px 35px rgba(240, 98, 146, 0.4); z-index: 1100; 
+    }
+
+    /* MODAL */
+    .modal { position: fixed; inset: 0; background: rgba(252, 228, 236, 0.8); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-content { background: white; padding: 35px; border-radius: 35px; width: 90%; max-width: 420px; max-height: 85vh; overflow-y: auto; }
+    input, select { width: 100%; padding: 14px; margin: 8px 0; border-radius: 15px; border: 1px solid #eee; background: #fafafa; }
+
+    /* AJUSTES IPHONE 16 PRO MAX */
+    @media (max-width: 440px) {
+      .navbar { 
+        width: 100%; 
+        height: calc(70px + env(safe-area-inset-bottom)); 
+        top: auto; 
+        bottom: 0; 
+        flex-direction: row; 
+        padding: 10px 10px env(safe-area-inset-bottom); 
+        justify-content: space-around; 
+        border-right: none; 
+        border-top: 1px solid rgba(255,255,255,0.3); 
+      }
+      .nav-brand { display: none; }
+      .nav-link { margin-bottom: 0; padding: 8px; flex-direction: column; gap: 4px; font-size: 0.6rem; }
+      .nav-link span { font-size: 1.4rem; }
+      
+      .main-content { margin-left: 0; padding: calc(90px + env(safe-area-inset-top)) 15px calc(90px + env(safe-area-inset-bottom)); }
+      .top-bar { left: 0; height: calc(70px + env(safe-area-inset-top)); padding-right: 20px; }
+      
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+      #addBtn { bottom: calc(85px + env(safe-area-inset-bottom)); right: 20px; width: 60px; height: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">Biblioteca</div>
+    <a href="livros.html" class="nav-link active"><span>📖</span> Livros</a>
+    <a href="challenge.html" class="nav-link"><span>🏆</span> Challenge</a>
+    <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
+    <a href="favoritos.html" class="nav-link"><span>💜</span> Favoritos</a>
+    <a href="bingo.html" class="nav-link"><span>🎯</span> Bingo</a>
+    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
+    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
+    <a href="roleta.html" class="nav-link "><span>📍</span> Roleta</a>
+  </nav>
+
+  <div class="top-bar">
+    <div class="pages-badge">✨ <span id="totalPgs">0</span> pgs lidas</div>
+  </div>
+
+  <main class="main-content">
+    <div class="stats-container">
+      <div class="stat-card"><small>Lidos</small><strong id="stLido">0</strong></div>
+      <div class="stat-card"><small>Lendo</small><strong id="stLendo">0</strong></div>
+      <div class="stat-card"><small>Favoritos</small><strong id="stFav">0</strong></div>
+      <div class="stat-card"><small>Média</small><strong id="stMedia">0.0</strong></div>
+    </div>
+    <div id="yearContainers"></div>
+  </main>
+
+  <button id="addBtn">＋</button>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2 style="color:var(--deep-pink); margin:0 0 15px">Novo Registro</h2>
+      <input type="file" id="bookFile" accept="image/*">
+      <input type="number" id="inputPages" placeholder="Páginas do livro">
+      <input type="number" id="inputYear" placeholder="Ano de leitura" value="2025">
+      <select id="statusSelect">
+        <option value="lido">📕 Já li</option>
+        <option value="lendo">📖 Lendo agora</option>
+        <option value="quero">📘 Quero ler</option>
+      </select>
+      <div style="text-align:center; font-size:2.5rem; margin:10px 0" id="starsSelect">
+        <span data-v="1" style="cursor:pointer">★</span><span data-v="2" style="cursor:pointer">★</span><span data-v="3" style="cursor:pointer">★</span><span data-v="4" style="cursor:pointer">★</span><span data-v="5" style="cursor:pointer">★</span>
+      </div>
+      <button id="saveBook" style="width:100%; padding:16px; background:linear-gradient(135deg, var(--deep-pink), #f48fb1); border:none; border-radius:18px; font-weight:bold; color:white; cursor:pointer">Salvar</button>
+      <button onclick="document.getElementById('modal').style.display='none'" style="width:100%; background:none; border:none; color:#aaa; margin-top:10px; cursor:pointer">Voltar</button>
+    </div>
+  </div>
+
+  <script>
+    let books = JSON.parse(localStorage.getItem("livros")) || [];
+    let selectedStars = 0;
+    let selectedImage = "";
+    let editId = null;
+
+    const salvar = () => localStorage.setItem("livros", JSON.stringify(books));
+
+    function renderStarsHtml(val) {
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += `<span style="color:${i <= val ? 'var(--gold)' : '#eee'}">★</span>`;
+      }
+      return html;
+    }
+
+    function renderBooks() {
+      const container = document.getElementById("yearContainers");
+      container.innerHTML = "";
+      
+      const lidos = books.filter(b => b.status === 'lido');
+      document.getElementById("totalPgs").innerText = lidos.reduce((acc, b) => acc + (parseInt(b.pages) || 0), 0).toLocaleString();
+      document.getElementById("stLido").innerText = lidos.length;
+      document.getElementById("stLendo").innerText = books.filter(b => b.status === 'lendo').length;
+      document.getElementById("stFav").innerText = books.filter(b => b.favorito).length;
+      
+      const years = [...new Set(books.map(b => b.year || 2025))].sort((a,b) => b - a);
+
+      years.forEach(year => {
+        const section = document.createElement("div");
+        section.innerHTML = `<h2 class="year-header">${year}</h2><div class="grid" id="grid-${year}"></div>`;
+        container.appendChild(section);
+
+        books.filter(b => (b.year || 2025) == year).forEach(book => {
+          const card = document.createElement("div");
+          card.className = "book-card";
+          card.innerHTML = `
+            <img src="${book.capa || 'https://cdn-icons-png.flaticon.com/512/3389/3389081.png'}">
+            <div class="stars">${renderStarsHtml(book.estrelas || 0)}</div>
+            <div style="display:flex; justify-content:center; gap:10px; padding-top:10px">
+              <button onclick="toggleFav('${book.id}')" style="background:none; border:none; font-size:1.2rem">${book.favorito ? "💜" : "🤍"}</button>
+              <button onclick="deleteBook('${book.id}')" style="background:none; border:none; font-size:1.2rem">🗑️</button>
+            </div>
+          `;
+          document.getElementById(`grid-${year}`).appendChild(card);
+        });
+      });
+    }
+
+    function toggleFav(id) {
+        const b = books.find(x => x.id === id);
+        b.favorito = !b.favorito;
+        salvar(); renderBooks();
+    }
+
+    function deleteBook(id) {
+        if(confirm("Excluir este livro?")) {
+            books = books.filter(x => x.id !== id);
+            salvar(); renderBooks();
+        }
+    }
+
+    document.getElementById("addBtn").onclick = () => {
+      editId = null; selectedStars = 0; selectedImage = "";
+      document.getElementById("modal").style.display = "flex";
+    };
+
+    document.querySelectorAll("#starsSelect span").forEach((s, i) => {
+      s.onclick = () => { selectedStars = i + 1; atualizarEstrelasVisual(); };
+    });
+
+    function atualizarEstrelasVisual() {
+      document.querySelectorAll("#starsSelect span").forEach((s, i) => {
+        s.style.color = (i < selectedStars) ? "var(--gold)" : "#eee";
+      });
+    }
+
+    document.getElementById("bookFile").onchange = e => {
+      const reader = new FileReader();
+      reader.onload = () => { selectedImage = reader.result; };
+      reader.readAsDataURL(e.target.files[0]);
+    };
+
+    document.getElementById("saveBook").onclick = () => {
+      const data = {
+        id: crypto.randomUUID(),
+        pages: parseInt(document.getElementById("inputPages").value) || 0,
+        year: parseInt(document.getElementById("inputYear").value) || 2025,
+        status: document.getElementById("statusSelect").value,
+        estrelas: selectedStars,
+        capa: selectedImage,
+        favorito: false
+      };
+      books.unshift(data);
+      salvar(); renderBooks();
+      document.getElementById("modal").style.display = "none";
+    };
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js');
+    }
+  
+    renderBooks();
+  </script>
+</body>
+</html>
