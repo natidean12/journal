@@ -2,17 +2,21 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Agenda • Lux Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Livros • Lux Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <meta name="theme-color" content="#fce4ec">
   <link rel="manifest" href="manifest.json">
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Livros">
+  <meta name="apple-mobile-web-app-title" content="Moniteca">
   
-  <link rel="apple-touch-icon" href="icons/capas.png">
+ <link rel="apple-touch-icon" href="icons/capas.png">
+  
+  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
+  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
+
 
   <style>
     :root {
@@ -32,12 +36,9 @@
       display: flex;
       min-height: 100vh;
       color: #4a4a4a;
-      /* Prevenção de corte no iPhone 16 Pro Max */
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* NAVBAR LATERAL (iPad) */
+    /* NAVBAR CORRIGIDA */
     .navbar {
       width: var(--sidebar-width);
       background: rgba(255, 255, 255, 0.4);
@@ -46,20 +47,20 @@
       border-right: 1px solid rgba(255, 255, 255, 0.3);
       display: flex; flex-direction: column; padding: 40px 25px; position: fixed; height: 100vh; z-index: 1000;
     }
-    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
-    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px 20px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
+    .nav-brand { 
+      font-size: 2.2rem; 
+      font-weight: 800; 
+      color: var(--deep-pink); 
+      margin-bottom: 30px; 
+      text-align: center;
+      letter-spacing: -1px;
+    }
+    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px 20px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; transition: 0.3s; }
     .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
 
-    /* CONTEÚDO */
-    .main-content { 
-      margin-left: var(--sidebar-width); 
-      padding: 40px; 
-      width: 100%; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .main-content { margin-left: var(--sidebar-width); padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
+    /* CARD CALENDÁRIO */
     .calendar-card {
       background: white;
       padding: 30px;
@@ -69,7 +70,12 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.05);
     }
 
-    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
     .calendar-header h2 { color: var(--deep-pink); margin: 0; font-size: 1.4rem; }
     .btn-nav { background: #fdf2f5; border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; color: var(--deep-pink); font-weight: bold; }
 
@@ -83,7 +89,11 @@
       margin-bottom: 10px;
     }
 
-    .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
 
     .day {
       aspect-ratio: 1;
@@ -94,11 +104,17 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: 0.3s;
       font-size: 0.8rem;
       font-weight: 600;
       color: #888;
+      position: relative;
     }
-    .day.marked { background: var(--deep-pink); color: white; }
+    .day.marked {
+      background: var(--deep-pink);
+      color: white;
+      transform: scale(1.05);
+    }
     .day-emoji { font-size: 1rem; margin-top: 2px; }
 
     .status-box {
@@ -108,9 +124,14 @@
       margin-top: 25px;
       width: 100%;
       max-width: 500px;
-      padding-bottom: 50px;
     }
-    .stat-mini { background: white; padding: 15px; border-radius: 25px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
+    .stat-mini {
+      background: white;
+      padding: 15px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+    }
     .stat-mini span { display: block; font-size: 0.7rem; color: #aaa; font-weight: bold; text-transform: uppercase; }
     .stat-mini strong { font-size: 1.3rem; color: var(--deep-pink); }
 
@@ -122,41 +143,21 @@
       background: white;
       padding: 10px 20px;
       border-radius: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
-    select { border: none; background: #fdf2f5; padding: 8px 12px; border-radius: 12px; color: var(--deep-pink); font-weight: bold; }
+    select { border: none; background: #fdf2f5; padding: 5px 10px; border-radius: 10px; color: var(--deep-pink); font-weight: bold; outline: none; }
 
-    /* AJUSTE IPHONE 16 PRO MAX */
     @media (max-width: 440px) {
-      .navbar { 
-        width: 100%; 
-        height: calc(75px + env(safe-area-inset-bottom)); 
-        top: auto; 
-        bottom: 0; 
-        flex-direction: row; 
-        padding: 10px 10px env(safe-area-inset-bottom); 
-        justify-content: space-around; 
-        border-right: none;
-        border-top: 1px solid rgba(255,255,255,0.3);
-      }
+      .navbar { width: 100%; height: 75px; top: auto; bottom: 0; flex-direction: row; padding: 0; justify-content: space-around; }
       .nav-brand { display: none; }
-      .nav-link { font-size: 0.65rem; flex-direction: column; gap: 4px; padding: 5px; }
-      .nav-link span { font-size: 1.3rem; }
-
-      .main-content { 
-        margin-left: 0; 
-        padding: 20px 15px calc(110px + env(safe-area-inset-bottom)); 
-      }
-      .calendar-card { border-radius: 30px; padding: 15px; }
-      .day { border-radius: 8px; font-size: 0.75rem; }
-      .status-box { gap: 10px; }
+      .main-content { margin-left: 0; padding: 20px 20px 100px; }
+      .calendar-card { padding: 20px; }
     }
   </style>
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-brand">Lux Edition</div>
+    <div class="nav-brand">Biblioteca</div>
     <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
     <a href="challenge.html" class="nav-link"><span>🏆</span> Challenge</a>
     <a href="calendario.html" class="nav-link active"><span>📅</span> Agenda</a>
@@ -183,11 +184,11 @@
     </div>
 
     <div class="tools">
-      <span style="font-size: 0.75rem; font-weight: bold; color: #888;">MARCAR COM:</span>
+      <span style="font-size: 0.8rem; font-weight: bold; color: #888;">MARCAR COM:</span>
       <select id="emojiSelect">
         <option value="📖">📖 Leitura</option>
         <option value="✨">✨ Terminei!</option>
-        <option value="🔥">🔥 Meta</option>
+        <option value="🔥">🔥 Meta Batida</option>
         <option value="⭐">⭐ Favorito</option>
       </select>
     </div>
@@ -280,10 +281,11 @@
     document.getElementById("nextMonth").onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); render(); };
 
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js');
-    }
+    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
+      .then(() => console.log("Service Worker Ativo!"));
+  }
   
     render();
   </script>
 </body>
-</html>
+</html> essa tela a mesma coisa 
