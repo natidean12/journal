@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Cosmic Bloom Library ✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary-lavender: #d1c4e9;
@@ -294,6 +297,29 @@
       .main-content { margin-left: 0; padding: 20px 15px 100px; }
       .books-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
       #addBtn { bottom: 85px; right: 15px; width: 50px; height: 50px; font-size: 2rem; }
+    }
+    /* iPhone Adaptations */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%; 
+        height: calc(70px + var(--safe-bottom)); 
+        bottom: 0; top: auto;
+        flex-direction: row; justify-content: space-around;
+        padding: 0 10px var(--safe-bottom); 
+        border-right: none; border-top: 1px solid var(--card-border);
+        box-shadow: 0 -2px 15px rgba(0,0,0,0.2);
+      }
+      .nav-brand { display: none; }
+      .nav-link { margin-bottom: 0; padding: 10px 5px; flex-direction: column; font-size: 0.7rem; gap: 2px; border-radius: 15px; }
+      .main-content { margin-left: 0; padding: calc(20px + var(--safe-top)) 15px calc(100px + var(--safe-bottom)); }
+      .books-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      #addBtn { bottom: calc(85px + var(--safe-bottom)); right: 15px; width: 50px; height: 50px; font-size: 2rem; }
+    }
+    /* iPad Adaptations */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .sidebar { width: 220px; }
+        .main-content { margin-left: 220px; }
+        .books-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
     }
   </style>
 </head>
