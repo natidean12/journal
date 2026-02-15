@@ -7,22 +7,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-lavender: #d1c4e9; /* Lavanda suave */
-      --secondary-berry: #a3617b; /* Tom de baga mais escuro */
-      --accent-gold: #fbc02d;    /* Dourado cintilante */
-      --bg-dark-purple: #3a2b4f; /* Roxo escuro para o fundo */
-      --bg-light-purple: #5c4b7d; /* Roxo médio para gradiente */
-      --card-bg: rgba(255, 255, 255, 0.08); /* Fundo dos cards quase transparente */
-      --card-border: rgba(255, 255, 255, 0.15); /* Borda suave */
+      --primary-lavender: #d1c4e9;
+      --secondary-berry: #a3617b;
+      --accent-gold: #fbc02d;
+      --bg-dark-purple: #3a2b4f;
+      --bg-light-purple: #5c4b7d;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
       --text-light: #f8f8f8;
       --text-muted: #e0e0e0;
     }
 
-    /* Reset e fontes */
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif; /* Fonte moderna e legível */
+      font-family: 'Poppins', sans-serif;
       color: var(--text-light);
       background: radial-gradient(circle at bottom left, var(--bg-light-purple) 0%, var(--bg-dark-purple) 100%);
       background-attachment: fixed;
@@ -32,7 +31,6 @@
 
     h1, h2, .nav-brand { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; color: var(--primary-lavender); }
 
-    /* Barra de Navegação (Sidebar) */
     .sidebar {
       width: 250px;
       background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
@@ -53,7 +51,7 @@
       color: var(--text-muted);
       text-decoration: none;
       padding: 14px 18px;
-      border-radius: 25px; /* Bordas mais suaves */
+      border-radius: 25px;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
@@ -63,7 +61,7 @@
       position: relative;
       overflow: hidden;
     }
-    .nav-link::before { /* Efeito de brilho */
+    .nav-link::before {
       content: '';
       position: absolute;
       top: 0; left: -100%;
@@ -78,9 +76,8 @@
       box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
       transform: translateX(5px);
     }
-    .nav-link i { font-size: 1.3rem; } /* Ícones mais sutis */
+    .nav-link i { font-size: 1.3rem; }
 
-    /* Conteúdo Principal */
     .main-content { margin-left: 250px; padding: 40px; flex: 1; }
     .top-bar {
       display: flex;
@@ -104,7 +101,6 @@
       gap: 8px;
     }
 
-    /* Cards de Estatísticas */
     .stats-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -121,7 +117,7 @@
       position: relative;
       overflow: hidden;
     }
-    .stat-card::after { /* Efeito de "pó de estrela" */
+    .stat-card::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -132,7 +128,6 @@
     .stat-card small { display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 8px; }
     .stat-card strong { font-size: 2.2rem; font-weight: 700; color: var(--accent-gold); text-shadow: 0 0 8px rgba(251, 192, 45, 0.4); }
 
-    /* Seções por Ano e Grid de Livros */
     .year-header {
       font-size: 2.5rem;
       margin: 60px 0 30px;
@@ -168,7 +163,7 @@
       aspect-ratio: 2/3;
       object-fit: cover;
       border-radius: 12px;
-      background: #4a3c63; /* Cor de fundo para capas sem imagem */
+      background: #4a3c63;
       margin-bottom: 15px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
@@ -200,11 +195,10 @@
     .del-btn.warning { background: #ff5252 !important; color: white; animation: pulse 0.6s infinite; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-    /* Botão Flutuante de Adicionar (FAB) */
     #addBtn {
       position: fixed; bottom: 40px; right: 40px;
       width: 60px; height: 60px;
-      border-radius: 50%; /* Redondo */
+      border-radius: 50%;
       background: linear-gradient(45deg, var(--accent-gold), #f9f871);
       color: var(--bg-dark-purple);
       font-size: 2.5rem;
@@ -217,10 +211,9 @@
     }
     #addBtn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 20px 45px rgba(251, 192, 45, 0.6); }
 
-    /* Modal */
     .modal {
       position: fixed; inset: 0;
-      background: rgba(43, 29, 63, 0.7); /* Fundo semi-transparente roxo */
+      background: rgba(43, 29, 63, 0.7);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: flex; align-items: center; justify-content: center;
@@ -252,20 +245,28 @@
       font-family: 'Poppins', sans-serif;
       font-size: 1rem;
     }
-    input::placeholder, select option { color: rgba(255,255,255,0.5); }
 
     #starsSelect { text-align:center; font-size:3rem; margin:15px 0; }
     #starsSelect span {
       cursor:pointer;
-      color: rgba(255,255,255,0.3); /* Estrelas apagadas */
+      color: rgba(255,255,255,0.2);
       transition: color 0.2s ease;
-      text-shadow: none; /* Remove o brilho individual nas não selecionadas */
+      position: relative;
+      display: inline-block;
+    }
+    /* Estilo para representar meia estrela no seletor */
+    #starsSelect span.half-selected::before {
+      content: "★";
+      position: absolute;
+      left: 0;
+      width: 50%;
+      overflow: hidden;
+      color: var(--accent-gold);
     }
     #starsSelect span.selected {
         color: var(--accent-gold);
         text-shadow: 0 0 10px rgba(251, 192, 45, 0.7);
     }
-
 
     .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
     .modal-buttons button {
@@ -279,13 +280,8 @@
       box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
     }
     #saveBook:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(163, 97, 123, 0.6); }
-    #closeModal {
-      background: rgba(255,255,255,0.1);
-      color: var(--text-muted);
-    }
-    #closeModal:hover { background: rgba(255,255,255,0.2); }
+    #closeModal { background: rgba(255,255,255,0.1); color: var(--text-muted); }
 
-    /* Responsividade Mobile */
     @media (max-width: 768px) {
       .sidebar {
         width: 100%; height: 70px; bottom: 0; top: auto;
@@ -295,20 +291,9 @@
       }
       .nav-brand { display: none; }
       .nav-link { margin-bottom: 0; padding: 10px 5px; flex-direction: column; font-size: 0.7rem; gap: 2px; border-radius: 15px; }
-      .nav-link i { font-size: 1.1rem; }
-      .nav-link::before { content: none; } /* Remove brilho no hover para mobile */
-
       .main-content { margin-left: 0; padding: 20px 15px 100px; }
-      .top-bar { padding-bottom: 20px; }
-      .stats-container { grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-      .stat-card strong { font-size: 1.8rem; }
-      .year-header { font-size: 1.8rem; margin: 40px 0 20px; }
       .books-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-      .book-card img { border-radius: 8px; }
-      .book-card { padding: 10px; border-radius: 15px; }
-      .book-actions button { width: 32px; height: 32px; font-size: 0.9rem; border-radius: 10px; }
       #addBtn { bottom: 85px; right: 15px; width: 50px; height: 50px; font-size: 2rem; }
-      .modal-content { padding: 25px; border-radius: 20px; }
     }
   </style>
 </head>
@@ -374,7 +359,7 @@
       for (let i = 1; i <= 5; i++) {
         if (i <= Math.floor(val)) html += '<span>★</span>';
         else if (i === Math.ceil(val) && val % 1 !== 0) html += '<span class="half-star">★</span>';
-        else html += '<span style="color:rgba(255,255,255,0.2)">★</span>'; /* Estrelas vazias mais claras */
+        else html += '<span style="color:rgba(255,255,255,0.2)">★</span>';
       }
       return html;
     }
@@ -382,32 +367,25 @@
     function renderBooks() {
       const container = document.getElementById("yearContainers");
       container.innerHTML = "";
-      
       const lidos = books.filter(b => b.status === 'lido');
-      
-      const totalPgsCalculado = lidos.reduce((acc, b) => acc + (parseInt(b.pages) || 0), 0);
-      document.getElementById("totalPgs").innerText = totalPgsCalculado.toLocaleString('pt-BR');
-
+      document.getElementById("totalPgs").innerText = lidos.reduce((acc, b) => acc + (parseInt(b.pages) || 0), 0).toLocaleString('pt-BR');
       document.getElementById("stLido").innerText = lidos.length;
       document.getElementById("stLendo").innerText = books.filter(b => b.status === 'lendo').length;
       document.getElementById("stFav").innerText = books.filter(b => b.favorito).length;
-      
       const media = books.length ? (books.reduce((a,b) => a + (b.estrelas || 0), 0) / books.length).toFixed(1) : "0.0";
       document.getElementById("stMedia").innerText = media;
 
       const years = [...new Set(books.map(b => b.year || new Date().getFullYear()))].sort((a,b) => b - a);
-
       years.forEach(year => {
         const section = document.createElement("div");
         section.innerHTML = `<h2 class="year-header">${year}</h2><div class="books-grid" id="grid-${year}"></div>`;
         container.appendChild(section);
-
         books.filter(b => (b.year || new Date().getFullYear()) == year).forEach(book => {
           const card = document.createElement("div");
           card.className = "book-card";
           card.innerHTML = `
-            <img src="${book.capa || 'https://i.ibb.co/C07F1kL/placeholder-book-cover.png'}" alt="${book.title || 'Capa do Livro'}">
-            <h3 style="font-size:1.1rem; margin:0 0 8px; color:var(--text-light);">${book.title || 'Livro Sem Título'}</h3>
+            <img src="${book.capa || 'https://i.ibb.co/C07F1kL/placeholder-book-cover.png'}">
+            <h3 style="font-size:1.1rem; margin:0 0 8px;">${book.title || 'Sem Título'}</h3>
             <div class="stars">${renderStarsHtml(book.estrelas || 0)}</div>
             <div class="book-actions">
               <button class="fav-btn">${book.favorito ? "💜" : "🤍"}</button>
@@ -415,27 +393,21 @@
               <button class="del-btn">🗑️</button>
             </div>
           `;
-
-          let timer = null;
           card.querySelector(".del-btn").onclick = function() {
             if (!this.classList.contains("warning")) {
               this.classList.add("warning");
-              timer = setTimeout(() => this.classList.remove("warning"), 2500);
+              setTimeout(() => this.classList.remove("warning"), 2500);
             } else {
-              clearTimeout(timer);
               books = books.filter(b => b.id !== book.id);
               salvar(); renderBooks();
             }
           };
-
           card.querySelector(".fav-btn").onclick = () => { book.favorito = !book.favorito; salvar(); renderBooks(); };
           card.querySelector(".edit-btn").onclick = () => {
-            editId = book.id;
-            selectedStars = book.estrelas;
-            selectedImage = book.capa;
-            document.getElementById("inputTitle").value = book.title || ""; // Popula o título
-            document.getElementById("inputPages").value = book.pages || "";
-            document.getElementById("inputYear").value = book.year || new Date().getFullYear();
+            editId = book.id; selectedStars = book.estrelas; selectedImage = book.capa;
+            document.getElementById("inputTitle").value = book.title;
+            document.getElementById("inputPages").value = book.pages;
+            document.getElementById("inputYear").value = book.year;
             document.getElementById("statusSelect").value = book.status;
             atualizarEstrelasVisual();
             document.getElementById("modal").classList.add("show");
@@ -445,26 +417,13 @@
       });
     }
 
-    document.getElementById("addBtn").onclick = () => {
-      editId = null; selectedStars = 0; selectedImage = "";
-      document.getElementById("inputTitle").value = ""; // Limpa o título
-      document.getElementById("inputPages").value = "";
-      document.getElementById("inputYear").value = new Date().getFullYear(); // Ano atual como default
-      document.getElementById("statusSelect").value = "quero"; // Default para "Quero Ler"
-      document.getElementById("bookFile").value = ""; // Limpa o input de arquivo
-      atualizarEstrelasVisual();
-      document.getElementById("modal").classList.add("show");
-    };
-
-    document.getElementById("closeModal").onclick = () => {
-        document.getElementById("modal").classList.remove("show");
-    };
-
-
     document.querySelectorAll("#starsSelect span").forEach((s, i) => {
       s.onclick = () => {
         let val = i + 1;
-        selectedStars = (selectedStars === val) ? val - 0.5 : val; // Alterna para meia estrela
+        // Se clicar no valor atual, vira meia estrela. Se clicar de novo na meia estrela, zera.
+        if (selectedStars === val) selectedStars = val - 0.5;
+        else if (selectedStars === (val - 0.5)) selectedStars = 0;
+        else selectedStars = val;
         atualizarEstrelasVisual();
       };
     });
@@ -472,53 +431,44 @@
     function atualizarEstrelasVisual() {
       document.querySelectorAll("#starsSelect span").forEach((s, i) => {
         let val = i + 1;
+        s.classList.remove("selected", "half-selected");
         if (val <= Math.floor(selectedStars)) s.classList.add("selected");
-        else if (val === Math.ceil(selectedStars) && selectedStars % 1 !== 0) {
-            s.classList.add("selected"); // Para a meia estrela, podemos aplicar a cor total e o renderStarsHtml cuidará da metade
-            // No CSS atual, o half-star já cuida da "metade" visualmente.
-            // Para ter uma meia estrela *visual* no seletor, precisaríamos de outro elemento ou pseudo-elemento.
-            // Por simplicidade, farei a estrela inteira brilhar e o valor real será 0.5.
-        }
-        else s.classList.remove("selected");
+        else if (val === Math.ceil(selectedStars) && selectedStars % 1 !== 0) s.classList.add("half-selected");
       });
     }
+
+    document.getElementById("addBtn").onclick = () => {
+      editId = null; selectedStars = 0; selectedImage = "";
+      document.getElementById("inputTitle").value = "";
+      document.getElementById("inputPages").value = "";
+      atualizarEstrelasVisual();
+      document.getElementById("modal").classList.add("show");
+    };
+
+    document.getElementById("closeModal").onclick = () => document.getElementById("modal").classList.remove("show");
 
     document.getElementById("bookFile").onchange = e => {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.type === "application/pdf" || file.name.endsWith(".epub")) {
-        selectedImage = "https://i.ibb.co/C07F1kL/placeholder-book-cover.png"; // Placeholder para PDF/Epub
-      } else {
-        const reader = new FileReader();
-        reader.onload = () => { selectedImage = reader.result; };
-        reader.readAsDataURL(file);
-      }
+      const reader = new FileReader();
+      reader.onload = () => { selectedImage = reader.result; };
+      reader.readAsDataURL(file);
     };
 
     document.getElementById("saveBook").onclick = () => {
       const data = {
-        title: document.getElementById("inputTitle").value || "Livro Sem Título", // Salva o título
+        title: document.getElementById("inputTitle").value || "Sem Título",
         pages: parseInt(document.getElementById("inputPages").value) || 0,
         year: parseInt(document.getElementById("inputYear").value) || new Date().getFullYear(),
         status: document.getElementById("statusSelect").value,
         estrelas: selectedStars,
-        capa: selectedImage || "https://i.ibb.co/C07F1kL/placeholder-book-cover.png" // Garante uma capa
+        capa: selectedImage || "https://i.ibb.co/C07F1kL/placeholder-book-cover.png"
       };
-      if(editId) {
-        const b = books.find(x => x.id === editId);
-        Object.assign(b, data);
-      } else {
-        books.unshift({ id: crypto.randomUUID(), favorito: false, ...data });
-      }
+      if(editId) Object.assign(books.find(x => x.id === editId), data);
+      else books.unshift({ id: crypto.randomUUID(), favorito: false, ...data });
       salvar(); renderBooks();
       document.getElementById("modal").classList.remove("show");
     };
-  
-    // Adicionar Service Worker aqui, se aplicável, com o nome do seu arquivo sw.js
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log("Service Worker Cosmic Bloom Ativo!"));
-    }
 
     renderBooks();
   </script>
