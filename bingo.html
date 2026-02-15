@@ -31,8 +31,8 @@
       display: flex;
     }
 
-    /* SIDEBAR */
-     .sidebar {
+   /* SIDEBAR */
+   .sidebar {
       width: 250px;
       background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
       backdrop-filter: blur(15px);
@@ -89,7 +89,7 @@
     .nav-link i { font-size: 1.3rem; }
 
     /* MAIN CONTENT */
-    .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
 
     .header-title {
       font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic;
@@ -112,7 +112,7 @@
       padding: 0 25px; border-radius: 12px; font-weight: bold; cursor: pointer;
     }
 
-    /* BINGO CARD */
+    /* BINGO CARD - iPad Fix */
     .bingo-card {
       background: var(--card-bg); backdrop-filter: blur(10px);
       border: 1px solid var(--card-border); padding: 25px; border-radius: 35px;
@@ -126,18 +126,29 @@
     .delete-btn {
       background: rgba(255, 64, 129, 0.15); color: #ff80ab; border: 1px solid rgba(255, 64, 129, 0.3);
       padding: 8px 15px; border-radius: 12px; font-size: 0.7rem; cursor: pointer;
-      transition: 0.3s; font-weight: 600;
+      font-weight: 600;
     }
     
-    .delete-btn:hover { background: rgba(255, 64, 129, 0.3); }
-
-    .bingo-grid { display: grid; gap: 10px; margin-top: 15px; }
+    /* GRID - Forced Square */
+    .bingo-grid { 
+      display: grid; 
+      gap: 10px; 
+      margin-top: 15px; 
+      width: 100%;
+    }
 
     .bingo-cell {
-      aspect-ratio: 1; background: rgba(255,255,255,0.05);
-      border-radius: 15px; border: 1px solid var(--card-border);
-      position: relative; padding: 5px; transition: 0.3s;
-      display: flex; align-items: center; justify-content: center;
+      width: 100%;
+      aspect-ratio: 1 / 1; /* Força o quadrado no iPad */
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px; 
+      border: 1px solid var(--card-border);
+      position: relative; 
+      transition: 0.3s;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      overflow: hidden;
     }
 
     .bingo-cell.done {
@@ -146,13 +157,26 @@
     }
 
     .bingo-cell.done::after {
-      content: "✨"; position: absolute; top: 5px; right: 5px; font-size: 0.7rem;
+      content: "✨"; position: absolute; top: 5px; right: 5px; font-size: 0.7rem; z-index: 2;
     }
 
     .bingo-cell textarea {
-      width: 100%; height: 100%; background: transparent; border: none;
-      resize: none; text-align: center; color: white; font-family: inherit;
-      font-size: 0.75rem; font-weight: 600; outline: none;
+      width: 100%; 
+      height: 100%; 
+      background: transparent; 
+      border: none;
+      resize: none; 
+      text-align: center; 
+      color: white; 
+      font-family: inherit;
+      font-size: 0.75rem; 
+      font-weight: 600; 
+      outline: none;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      -webkit-appearance: none;
     }
 
     .progress-container { margin-top: 15px; }
@@ -227,7 +251,6 @@
       document.getElementById("titleInput").value = "";
     }
 
-    // Função de remover agora é chamada por dblclick
     function removeBingo(id) {
       bingos = bingos.filter(b => b.id !== id);
       save(); render();
@@ -238,7 +261,10 @@
       bingo.cells[cellIdx].done = !bingo.cells[cellIdx].done;
       
       if(bingo.cells[cellIdx].done) {
-        createConfetti(event.clientX, event.clientY);
+        // Coleta coordenadas do toque/clique para os confetes
+        const x = event.clientX || (event.touches ? event.touches[0].clientX : 0);
+        const y = event.clientY || (event.touches ? event.touches[0].clientY : 0);
+        createConfetti(x, y);
       }
       
       save(); render();
@@ -246,8 +272,10 @@
 
     function updateText(bingoId, cellIdx, text) {
       const bingo = bingos.find(b => b.id === bingoId);
-      bingo.cells[cellIdx].text = text;
-      save();
+      if(bingo) {
+        bingo.cells[cellIdx].text = text;
+        save();
+      }
     }
 
     function createConfetti(x, y) {
@@ -293,6 +321,7 @@
                 <textarea 
                   oninput="updateText(${b.id}, ${i}, this.value)"
                   placeholder="..."
+                  spellcheck="false"
                 >${cell.text}</textarea>
               </div>
             `).join('')}
