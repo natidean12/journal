@@ -6,7 +6,7 @@ const FILES_TO_CACHE = [
   "./livros.html",
   "./roleta.html",
   "./manifest.json",
-  "./icons/capas.png", 
+  "./icone.png", // Mudado aqui!
   "./offline.html" 
 ];
 
