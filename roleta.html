@@ -2,225 +2,250 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Livros • Lux Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
-  <meta name="theme-color" content="#fce4ec">
-  <link rel="manifest" href="manifest.json">
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Moniteca">
-  
- <link rel="apple-touch-icon" href="icons/capas.png">
-  
-  <link rel="apple-touch-startup-image" href="screenshots/splash-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px)">
-  <link rel="apple-touch-startup-image" href="screenshots/splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px)">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cosmic Bloom • Roleta ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --primary-pink: #fce4ec;
-      --deep-pink: #f06292;
-      --sidebar-desktop: 260px;
+      --primary-lavender: #d1c4e9;
+      --secondary-berry: #a3617b;
+      --bg-dark-purple: #3a2b4f;
+      --bg-light-purple: #5c4b7d;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --text-light: #f8f8f8;
+      --text-muted: rgba(255, 255, 255, 0.6);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0; font-family: 'Segoe UI', system-ui, sans-serif;
-      background: 
-        linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.8)),
-        url("https://i.pinimg.com/1200x/2e/cc/84/2ecc84f5fd256602ee86a5a345a6838b.jpg") center/cover fixed;
-      display: flex; min-height: 100vh; color: #4a4a4a;
+      margin: 0; font-family: 'Poppins', sans-serif; color: var(--text-light);
+      background: radial-gradient(circle at bottom left, var(--bg-light-purple) 0%, var(--bg-dark-purple) 100%);
+      background-attachment: fixed; min-height: 100vh; display: flex;
     }
 
-    /* NAVBAR */
-    .navbar {
-      width: var(--sidebar-desktop); background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.3);
-      display: flex; flex-direction: column; padding: 40px 20px; position: fixed; height: 100vh; z-index: 1000;
+       /* SIDEBAR */
+   .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 20px;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
     }
-    .nav-brand { font-size: 2.2rem; font-weight: 800; color: var(--deep-pink); margin-bottom: 30px; text-align: center; }
-    .nav-link { color: #7d7d7d; text-decoration: none; padding: 15px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
-    .nav-link.active { background: white; color: var(--deep-pink); box-shadow: 0 8px 20px rgba(240, 98, 146, 0.15); }
-
-    .main-content { margin-left: var(--sidebar-desktop); padding: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-
-    /* GERENCIADOR */
-    .manager-card { width: 100%; max-width: 500px; background: white; padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .selector-group { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding: 10px 0; }
-    
-    .wheel-tab {
-      padding: 12px 25px; background: #f8f8f8; border-radius: 15px; 
-      cursor: pointer; font-weight: 800; white-space: nowrap; transition: 0.2s;
-      border: 2px solid transparent; color: #888;
+    .nav-brand { 
+      font-family: 'Playfair Display', serif; 
+      font-style: italic; 
+      font-weight: 700; 
+      color: var(--primary-lavender); 
+      font-size: 2.2rem; 
+      text-align: center; 
+      margin-bottom: 40px; 
+      text-shadow: 0 0 10px rgba(255,255,255,0.2); 
     }
-    .wheel-tab.active { background: var(--deep-pink); color: white; border-color: white; box-shadow: 0 5px 15px rgba(240, 98, 146, 0.3); }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 14px 18px;
+      border-radius: 25px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.4s ease;
+    }
+    .nav-link:hover::before { left: 0; }
+    .nav-link.active {
+      background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%);
+      color: white;
+      box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
+      transform: translateX(5px);
+    }
+    .nav-link i { font-size: 1.3rem; }
+    .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
+    .header-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic; color: var(--primary-lavender); margin-bottom: 5px; }
+
+    .roleta-manager { width: 100%; max-width: 600px; margin-top: 20px; }
+    .tabs-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; scrollbar-width: none; }
+    .tab { padding: 10px 20px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; white-space: nowrap; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+    .tab.active { background: var(--secondary-berry); border-color: var(--primary-lavender); }
 
     /* ROLETA */
-    .wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 20px 0; }
+    .wheel-section { position: relative; margin: 30px 0; display: flex; flex-direction: column; align-items: center; }
+    .wheel-container { position: relative; width: 320px; height: 320px; border-radius: 50%; border: 8px solid var(--card-border); box-shadow: 0 0 30px rgba(0,0,0,0.3); }
     .pointer {
-      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      width: 35px; height: 45px; background: #333; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100;
+      position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent;
+      border-top: 30px solid var(--primary-lavender); z-index: 10; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
     }
-    canvas#wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 10px solid white; transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1); background: white; }
+    canvas#wheel { width: 100%; height: 100%; border-radius: 50%; transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1); }
 
     .btn-spin {
-      background: var(--deep-pink); color: white; border: none;
-      padding: 18px 60px; border-radius: 35px; font-size: 1.3rem; font-weight: 800;
-      cursor: pointer; box-shadow: 0 10px 25px rgba(240, 98, 146, 0.3); margin-bottom: 25px;
+      margin-top: 25px; padding: 15px 50px; border-radius: 30px; border: none;
+      background: linear-gradient(45deg, var(--secondary-berry), var(--primary-lavender));
+      color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s;
     }
 
-    /* LISTA */
-    .book-list-container { width: 100%; max-width: 500px; background: rgba(255,255,255,0.5); padding: 25px; border-radius: 30px; backdrop-filter: blur(10px); }
-    .input-box { display: flex; gap: 10px; margin-bottom: 20px; }
-    input { flex: 1; padding: 15px; border-radius: 15px; border: none; outline: none; font-weight: 600; }
-    
-    .book-item {
-      background: white; margin-bottom: 10px; padding: 15px 20px;
-      border-radius: 15px; display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; font-weight: 600; transition: 0.2s; border: 2px solid transparent;
+    .input-group { 
+      display: flex; background: var(--card-bg); border-radius: 20px; 
+      border: 1px solid var(--card-border); padding: 5px 5px 5px 15px; 
+      width: 100%; max-width: 400px; margin-bottom: 20px;
     }
-    .book-item.drawn { opacity: 0.4; text-decoration: line-through; background: #f0f0f0; }
+    .input-group input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 0.9rem; }
+    .btn-add { background: var(--secondary-berry); border: none; color: white; width: 35px; height: 35px; border-radius: 15px; cursor: pointer; }
 
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-    .modal-content { background: white; padding: 40px; border-radius: 40px; text-align: center; }
+    .items-list { width: 100%; max-width: 400px; display: grid; gap: 8px; }
+    .item-tag { background: var(--card-bg); padding: 10px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--card-border); font-size: 0.85rem; }
+    .item-tag .delete { color: #ff8a8a; cursor: pointer; padding: 5px; }
 
-    @media (max-width: 850px) {
-      .navbar { width: 75px; padding: 20px 5px; }
-      .nav-brand, .link-text { display: none; }
-      .main-content { margin-left: 75px; padding: 20px; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-content { text-align: center; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 5px; justify-content: space-around; border-right: none; border-top: 1px solid var(--card-border); }
+      .nav-brand, .nav-text { display: none; }
+      .main-content { margin-left: 0; padding: 20px 20px 100px; }
+      .nav-link { flex-direction: column; gap: 0; flex: 1; justify-content: center; }
+      .wheel-container { width: 280px; height: 280px; }
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="nav-brand">Biblioteca</div>
-    <a href="livros.html" class="nav-link"><span>📖</span> Livros</a>
-    <a href="challenge.html" class="nav-link "><span>🏆</span> Challenge</a>
-    <a href="calendario.html" class="nav-link"><span>📅</span> Agenda</a>
-    <a href="favoritos.html" class="nav-link"><span>💜</span> Favoritos</a>
-    <a href="bingo.html" class="nav-link"><span>🎯</span> Bingo</a>
-    <a href="cores.html" class="nav-link"><span>🌈</span> Cores</a>
-    <a href="a-z.html" class="nav-link"><span>🅰️</span> A-Z</a>
-    <a href="roleta.html" class="nav-link active"><span>📍</span> Roleta</a>
+ 
+  <nav class="sidebar">
+    <div class="nav-brand">Cosmic Bloom</div>
+    <a href="livros.html" class="nav-link "><i>📚</i> Livros</a>
+    <a href="challenge.html" class="nav-link"><i>🏆</i> Desafios</a>
+    <a href="calendario.html" class="nav-link "><i>📅</i> Agenda</a>
+    <a href="favoritos.html" class="nav-link"><i>💜</i> Favoritos</a>
+    <a href="bingo.html" class="nav-link"><i>🎯</i> Bingo Literário</a>
+    <a href="cores.html" class="nav-link"><i>🌈</i> Paleta Literária</a>
+    <a href="A-z.html" class="nav-link"><i>🅰️</i> Desafio A-Z</a>
+    <a href="roleta.html" class="nav-link active"><i>📍</i> Roleta</a>
   </nav>
 
   <main class="main-content">
-    <h1 style="color:var(--deep-pink); font-weight: 900;">Roletas Lux</h1>
-    <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">Toque 2x rápido no nome para apagar</p>
+    <h1 class="header-title">Roleta Mística</h1>
     
-    <div class="manager-card">
-      <div class="selector-group" id="wheelTabs"></div>
-      <div class="input-box">
-        <input type="text" id="newWheelInput" placeholder="Nova roleta...">
-        <button onclick="addWheel()" style="background:var(--deep-pink); color:white; border:none; border-radius:12px; padding:10px 20px; font-weight:bold">Criar</button>
+    <div class="roleta-manager">
+      <div class="tabs-container" id="tabs"></div>
+      <div class="input-group" style="margin: 0 auto 20px;">
+        <input type="text" id="newWheelName" placeholder="Nova roleta...">
+        <button class="btn-add" onclick="addWheel()">+</button>
       </div>
     </div>
 
-    <div class="wheel-wrapper">
+    <div class="wheel-section">
       <div class="pointer"></div>
-      <canvas id="wheelCanvas" width="500" height="500"></canvas>
-    </div>
-
-    <button class="btn-spin" id="spinBtn" onclick="spinWheel()">GIRAR!</button>
-
-    <div class="book-list-container">
-      <div class="input-box">
-        <input type="text" id="bookInput" placeholder="Adicionar livro...">
-        <button onclick="addItem()" style="background:var(--deep-pink); color:white; border:none; border-radius:12px; padding:0 20px; font-weight:bold">+</button>
+      <div class="wheel-container">
+        <canvas id="wheel" width="500" height="500"></canvas>
       </div>
-      <div id="itemList"></div>
+      <button class="btn-spin" onclick="spin()">GIRAR SORTE</button>
     </div>
+
+    <div class="input-group">
+      <input type="text" id="newItemName" placeholder="Adicionar opção...">
+      <button class="btn-add" onclick="addItem()">+</button>
+    </div>
+
+    <div class="items-list" id="itemsList"></div>
   </main>
 
   <div class="modal" id="modal" onclick="this.style.display='none'">
     <div class="modal-content">
-      <h2 style="color:#aaa">SORTEADO!</h2>
-      <h1 id="winnerName" style="color:var(--deep-pink); font-size: 2.5rem; margin: 20px 0;">---</h1>
-      <button class="btn-spin" style="margin:0; font-size: 1rem;">FECHAR</button>
+      <p style="text-transform: uppercase; letter-spacing: 3px; color: var(--primary-lavender);">O destino escolheu:</p>
+      <h1 id="winnerName" style="font-family: 'Playfair Display', serif; font-size: 3rem; margin: 10px 0;">---</h1>
+      <p style="opacity: 0.5;">Toque para fechar</p>
     </div>
   </div>
 
   <script>
-    let data = JSON.parse(localStorage.getItem("moniteca_multi_final") || '[{"name":"Principal","items":[]}]');
+    let wheels = JSON.parse(localStorage.getItem("cosmic_wheels") || '[{"name":"Leituras","items":[{"text":"Fantasia","active":true},{"text":"Sci-Fi","active":true},{"text":"Romance","active":true},{"text":"Terror","active":true}]}]');
     let activeIdx = 0;
-    let rotation = 0;
-    let lastTap = 0; 
+    let currentRotation = 0;
 
-    const canvas = document.getElementById("wheelCanvas");
+    const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
 
     function save() {
-      localStorage.setItem("moniteca_multi_final", JSON.stringify(data));
+      localStorage.setItem("cosmic_wheels", JSON.stringify(wheels));
       render();
     }
 
-    function handleDoubleTap(callback) {
-      const now = new Date().getTime();
-      const timesince = now - lastTap;
-      if ((timesince < 350) && (timesince > 0)) {
-        callback();
-      }
-      lastTap = now;
-    }
-
     function addWheel() {
-      const input = document.getElementById("newWheelInput");
-      if (input.value.trim()) {
-        data.push({ name: input.value, items: [] });
-        activeIdx = data.length - 1;
-        input.value = "";
+      const name = document.getElementById("newWheelName").value;
+      if(name) {
+        wheels.push({name, items: []});
+        activeIdx = wheels.length - 1;
+        document.getElementById("newWheelName").value = "";
         save();
       }
     }
 
     function addItem() {
-      const input = document.getElementById("bookInput");
-      if (input.value.trim()) {
-        data[activeIdx].items.push({ name: input.value, active: true });
-        input.value = "";
+      const text = document.getElementById("newItemName").value;
+      if(text) {
+        wheels[activeIdx].items.push({text, active: true});
+        document.getElementById("newItemName").value = "";
         save();
       }
     }
 
+    function deleteItem(idx) {
+      wheels[activeIdx].items.splice(idx, 1);
+      save();
+    }
+
+    function toggleWheelDelete(idx) {
+      if(wheels.length > 1) {
+        if(confirm("Deseja excluir esta roleta?")) {
+          wheels.splice(idx, 1);
+          activeIdx = 0;
+          save();
+        }
+      }
+    }
+
     function render() {
-      const tabs = document.getElementById("wheelTabs");
+      const tabs = document.getElementById("tabs");
       tabs.innerHTML = "";
-      data.forEach((wheel, i) => {
+      wheels.forEach((w, i) => {
         const tab = document.createElement("div");
-        tab.className = `wheel-tab ${i === activeIdx ? 'active' : ''}`;
-        tab.innerText = wheel.name;
-        
-        tab.onclick = () => { 
-          handleDoubleTap(() => {
-            if(data.length > 1) {
-              data.splice(i, 1);
-              activeIdx = 0;
-              save();
-            }
-          });
-          activeIdx = i;
-          render();
-        };
+        tab.className = `tab ${i === activeIdx ? 'active' : ''}`;
+        tab.innerText = w.name;
+        tab.onclick = () => { activeIdx = i; render(); };
+        tab.ondblclick = () => toggleWheelDelete(i);
         tabs.appendChild(tab);
       });
 
-      const list = document.getElementById("itemList");
+      const list = document.getElementById("itemsList");
       list.innerHTML = "";
-      data[activeIdx].items.forEach((item, i) => {
+      wheels[activeIdx].items.forEach((item, i) => {
         const div = document.createElement("div");
-        div.className = `book-item ${item.active ? '' : 'drawn'}`;
-        div.innerHTML = `<span>${item.name}</span> <span>${item.active ? '⚪' : '✅'}</span>`;
-        
-        div.onclick = () => {
-          handleDoubleTap(() => {
-            data[activeIdx].items.splice(i, 1);
-            save();
-          });
-        };
+        div.className = "item-tag";
+        div.innerHTML = `<span>${item.text}</span><span class="delete" onclick="deleteItem(${i})">✕</span>`;
         list.appendChild(div);
       });
 
@@ -228,60 +253,52 @@
     }
 
     function drawWheel() {
-      const activeItems = data[activeIdx].items.filter(item => item.active);
-      const centerX = 250; const centerY = 250; const radius = 240;
+      const items = wheels[activeIdx].items;
       ctx.clearRect(0, 0, 500, 500);
+      if(items.length === 0) return;
 
-      if (activeItems.length === 0) {
-        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = "#ccc"; ctx.textAlign = "center"; ctx.font = "20px sans-serif";
-        ctx.fillText("Vazio", centerX, centerY);
-        return;
-      }
-
-      const arc = (Math.PI * 2) / activeItems.length;
-      activeItems.forEach((item, i) => {
+      const arc = (Math.PI * 2) / items.length;
+      items.forEach((item, i) => {
         const angle = i * arc;
-        ctx.fillStyle = i % 2 === 0 ? "#f06292" : "#fce4ec";
-        ctx.beginPath(); ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, angle, angle + arc); ctx.fill();
+        ctx.fillStyle = i % 2 === 0 ? "#a3617b" : "#4a3b61";
+        ctx.beginPath(); 
+        ctx.moveTo(250, 250);
+        ctx.arc(250, 250, 240, angle, angle + arc); 
+        ctx.fill();
+        
         ctx.save();
-        ctx.translate(centerX, centerY); ctx.rotate(angle + arc/2);
-        ctx.fillStyle = i % 2 === 0 ? "white" : "#f06292";
-        ctx.font = "bold 24px Segoe UI"; ctx.textAlign = "right";
-        ctx.fillText(item.name.substring(0, 16), radius - 30, 10);
+        ctx.translate(250, 250);
+        ctx.rotate(angle + arc/2);
+        ctx.fillStyle = "white";
+        ctx.textAlign = "right";
+        ctx.font = "bold 22px Poppins";
+        ctx.fillText(item.text.substring(0, 15), 210, 10);
         ctx.restore();
       });
     }
 
-    function spinWheel() {
-      const activeItems = data[activeIdx].items.filter(item => item.active);
-      if (activeItems.length < 2) return alert("Adicione 2 livros!");
+    function spin() {
+      const items = wheels[activeIdx].items;
+      if(items.length < 2) return alert("Adicione pelo menos 2 opções!");
 
-      const btn = document.getElementById("spinBtn");
-      btn.disabled = true;
-      rotation += (5 + Math.random() * 5) * 360;
-      canvas.style.transform = `rotate(${rotation}deg)`;
+      // Gira pelo menos 8 voltas + aleatório
+      const extraDeg = Math.floor(2880 + Math.random() * 1440);
+      currentRotation += extraDeg;
+      canvas.style.transform = `rotate(${currentRotation}deg)`;
 
       setTimeout(() => {
-        const actualDeg = rotation % 360;
-        const arcSize = 360 / activeItems.length;
-        const index = Math.floor((360 - actualDeg) / arcSize) % activeItems.length;
-        const winner = activeItems[index];
-
-        document.getElementById("winnerName").innerText = winner.name;
-        document.getElementById("modal").style.display = "flex";
-        winner.active = false;
+        const netRotation = currentRotation % 360;
+        const arcSize = 360 / items.length;
         
-        setTimeout(() => { save(); btn.disabled = false; }, 500);
+        // 270 graus compensa o ponteiro estar no TOPO (12h)
+        // O sentido é invertido (360 - net)
+        let winningIdx = Math.floor((360 - netRotation + 270) % 360 / arcSize);
+        
+        document.getElementById("winnerName").innerText = items[winningIdx].text;
+        document.getElementById("modal").style.display = "flex";
       }, 5000);
     }
 
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js') // mude 'sw.js' para o nome que você deu ao arquivo
-      .then(() => console.log("Service Worker Ativo!"));
-  }
-  
     render();
   </script>
 </body>
