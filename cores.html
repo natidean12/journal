@@ -152,7 +152,7 @@
   </main>
 
   <script>
-    const colorGrid = document.getElementById("colorGrid");
+const colorGrid = document.getElementById("colorGrid");
     const colors = [
       { name: "Vermelho", hex: "#ef5350" }, { name: "Laranja", hex: "#ff9800" },
       { name: "Amarelo", hex: "#fdd835" }, { name: "Verde", hex: "#66bb6a" },
@@ -162,15 +162,26 @@
       { name: "Marrom", hex: "#8d6e63" }, { name: "Branco", hex: "#ffffff" }
     ];
 
-    let estadoCores = JSON.parse(localStorage.getItem("moniteca_cores_v3") || "{}");
+    let estadoCores = {};
+    try {
+        estadoCores = JSON.parse(localStorage.getItem("moniteca_cores_v3") || "{}");
+    } catch(e) {
+        estadoCores = {};
+    }
+    
     let clickTimer = null;
 
     function salvar() {
-      localStorage.setItem("moniteca_cores_v3", JSON.stringify(estadoCores));
-      render();
+      try {
+        localStorage.setItem("moniteca_cores_v3", JSON.stringify(estadoCores));
+        render();
+      } catch (e) {
+        alert("Memória cheia! Tente apagar alguns desafios (clique duplo) para liberar espaço.");
+      }
     }
 
     function render() {
+      if(!colorGrid) return;
       colorGrid.innerHTML = "";
       let totalConcluido = 0;
       const segmentosAtivos = [];
@@ -188,24 +199,26 @@
         card.innerHTML = `
           <div class="photo-area">
             <div class="check-badge">✓</div>
-            ${info?.img ? `<img src="${info.img}">` : `<span style="opacity:0.2; font-size: 1.5rem;">📚</span>`}
+            ${info?.img ? `<img src="${info.img}" loading="lazy">` : `<span style="opacity:0.2; font-size: 1.5rem;">📚</span>`}
           </div>
           <div class="color-label" style="background: ${color.hex}; color: ${color.hex === '#ffffff' ? '#333' : 'white'}">
             ${color.name}
           </div>
         `;
 
-        card.onclick = (e) => {
+        card.onclick = () => {
             if (clickTimer == null) {
-                clickTimer = setTimeout(function () {
+                clickTimer = setTimeout(() => {
                     clickTimer = null;
                     abrirCamera(i);
-                }, 250);
+                }, 300);
             } else {
                 clearTimeout(clickTimer);
                 clickTimer = null;
-                delete estadoCores[i];
-                salvar();
+                if(confirm(`Remover desafio da cor ${color.name}?`)) {
+                    delete estadoCores[i];
+                    salvar();
+                }
             }
         };
 
@@ -213,28 +226,66 @@
       });
 
       const bar = document.getElementById("progressBar");
-      bar.innerHTML = "";
-      segmentosAtivos.forEach(hex => {
-        const seg = document.createElement("div");
-        seg.className = "progress-segment";
-        seg.style.backgroundColor = hex;
-        seg.style.width = `${100 / 12}%`;
-        bar.appendChild(seg);
-      });
+      if(bar) {
+        bar.innerHTML = "";
+        segmentosAtivos.forEach(hex => {
+          const seg = document.createElement("div");
+          seg.className = "progress-segment";
+          seg.style.backgroundColor = hex;
+          seg.style.width = `${100 / 12}%`;
+          bar.appendChild(seg);
+        });
+      }
 
       document.getElementById("counterLabel").innerText = `${totalConcluido} de 12 cores completadas`;
     }
 
+    // Função essencial para prints não travarem o navegador
+    function comprimirImagem(file, callback) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const max_size = 500; // Tamanho ideal
+
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width;
+              width = max_size;
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height;
+              height = max_size;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          // Transforma print PNG pesado em JPG leve
+          callback(canvas.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function abrirCamera(i) {
       const input = document.createElement("input");
-      input.type = "file"; input.accept = "image/*";
+      input.type = "file"; 
+      input.accept = "image/*";
       input.onchange = () => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          estadoCores[i] = { selected: true, img: reader.result };
+        const file = input.files[0];
+        if (!file) return;
+        
+        comprimirImagem(file, (base64) => {
+          estadoCores[i] = { selected: true, img: base64 };
           salvar();
-        };
-        reader.readAsDataURL(input.files[0]);
+        });
       };
       input.click();
     }
