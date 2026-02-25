@@ -179,92 +179,118 @@
 
   <script>
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    let estadoMeses = JSON.parse(localStorage.getItem("mesesEstado") || "{}");
+  
+  // Carrega com segurança para não travar
+  let estadoMeses = {};
+  try {
+    estadoMeses = JSON.parse(localStorage.getItem("mesesEstado") || "{}");
+  } catch(e) {
+    estadoMeses = {};
+  }
 
-    function render() {
-      const grid = document.getElementById("monthGrid");
-      grid.innerHTML = "";
+  // Função para comprimir os PRINTS (essencial!)
+  function comprimirPrint(file, callback) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const max_size = 500; // Tamanho ideal para miniatura
 
-      months.forEach(month => {
-        const card = document.createElement("div");
-        card.className = "month-card";
-
-        const titulo = document.createElement("div");
-        titulo.className = "month-name";
-        titulo.textContent = month;
-        card.appendChild(titulo);
-
-        const frame = document.createElement("div");
-        frame.className = "photo-frame";
-        
-        const info = estadoMeses[month];
-        
-        if (info) {
-          const img = document.createElement("img");
-          img.src = typeof info === 'string' ? info : info.img;
-          frame.appendChild(img);
-          frame.style.borderStyle = "solid";
+        if (width > height) {
+          if (width > max_size) {
+            height *= max_size / width;
+            width = max_size;
+          }
         } else {
-          frame.innerHTML = '<span style="font-size:2.5rem; opacity:0.2;">✨</span>';
+          if (height > max_size) {
+            width *= max_size / height;
+            height = max_size;
+          }
         }
-        card.appendChild(frame);
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        // Converte para JPEG 0.6 (muito mais leve que o PNG do print)
+        callback(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 
-        const bookLabel = document.createElement("div");
-        bookLabel.className = "book-title";
-        bookLabel.textContent = (info && info.title) ? info.title : "";
-        card.appendChild(bookLabel);
+  function salvar() {
+    try {
+      localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
+      render();
+    } catch (e) {
+      alert("Memória cheia! Tente apagar alguns meses (clique duplo) para liberar espaço.");
+    }
+  }
 
-        // --- LÓGICA DE CLIQUES ---
-        let clickTimer = null;
+  function render() {
+    const grid = document.getElementById("monthGrid");
+    if(!grid) return;
+    grid.innerHTML = "";
 
-        card.addEventListener("click", () => {
-          if (clickTimer) return; // Se for dblclick, ignora o primeiro clique
+    months.forEach(month => {
+      const card = document.createElement("div");
+      card.className = "month-card";
 
+      const info = estadoMeses[month];
+      
+      card.innerHTML = `
+        <div class="month-name">${month}</div>
+        <div class="photo-frame" style="${info ? 'border-style: solid' : ''}">
+          ${info ? `<img src="${typeof info === 'string' ? info : info.img}">` : '<span style="font-size:2.5rem; opacity:0.2;">✨</span>'}
+        </div>
+        <div class="book-title">${(info && info.title) ? info.title : ""}</div>
+      `;
+
+      // Lógica de cliques protegida
+      let clickTimer = null;
+      card.onclick = (e) => {
+        if (clickTimer == null) {
           clickTimer = setTimeout(() => {
             clickTimer = null;
-            // AÇÃO DO CLIQUE SIMPLES: ADICIONAR
+            // AÇÃO: ADICIONAR
             const input = document.createElement("input");
             input.type = "file";
             input.accept = "image/*";
             input.onchange = () => {
               const file = input.files[0];
               if (!file) return;
-              const reader = new FileReader();
-              reader.onload = () => {
+              
+              comprimirPrint(file, (base64Compressado) => {
                 const nomeLivro = prompt("Qual livro brilhou em " + month + "?");
                 estadoMeses[month] = {
-                  img: reader.result,
+                  img: base64Compressado,
                   title: nomeLivro || ""
                 };
-                localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
-                render();
-              };
-              reader.readAsDataURL(file);
+                salvar();
+              });
             };
             input.click();
-          }, 250);
-        });
-
-        card.addEventListener("dblclick", (e) => {
-          e.stopPropagation();
-          // Mata o timer do clique simples imediatamente
-          if (clickTimer) {
-            clearTimeout(clickTimer);
-            clickTimer = null;
-          }
-          // AÇÃO DO CLIQUE DUPLO: APAGAR IMEDIATAMENTE
-          if (estadoMeses[month]) {
+          }, 300);
+        } else {
+          // AÇÃO: APAGAR (CLIQUE DUPLO)
+          clearTimeout(clickTimer);
+          clickTimer = null;
+          if(confirm(`Deseja remover o destaque de ${month}?`)) {
             delete estadoMeses[month];
-            localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
-            render();
+            salvar();
           }
-        });
+        }
+      };
 
-        grid.appendChild(card);
-      });
-    }
+      grid.appendChild(card);
+    });
+  }
 
-    render();
+  render();
   </script>
 </body>
 </html>
