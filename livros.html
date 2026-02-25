@@ -358,12 +358,27 @@
   </div>
 
   <script>
-    let books = JSON.parse(localStorage.getItem("livrosCosmicBloom")) || [];
+  let books = [];
+    try {
+        books = JSON.parse(localStorage.getItem("livrosCosmicBloom")) || [];
+    } catch(e) {
+        console.error("Erro ao carregar livros:", e);
+        books = [];
+    }
+
     let selectedStars = 0;
     let selectedImage = "";
     let editId = null;
 
-    const salvar = () => localStorage.setItem("livrosCosmicBloom", JSON.stringify(books));
+    const salvar = () => {
+        try {
+            localStorage.setItem("livrosCosmicBloom", JSON.stringify(books));
+            renderBooks();
+        } catch (e) {
+            alert("A memória do navegador está cheia! Tente remover alguns livros antigos ou usar fotos menores.");
+            console.error("Erro ao salvar no localStorage:", e);
+        }
+    };
 
     function renderStarsHtml(val) {
       let html = '';
@@ -377,25 +392,30 @@
 
     function renderBooks() {
       const container = document.getElementById("yearContainers");
+      if(!container) return;
       container.innerHTML = "";
+      
       const lidos = books.filter(b => b.status === 'lido');
       document.getElementById("totalPgs").innerText = lidos.reduce((acc, b) => acc + (parseInt(b.pages) || 0), 0).toLocaleString('pt-BR');
       document.getElementById("stLido").innerText = lidos.length;
       document.getElementById("stLendo").innerText = books.filter(b => b.status === 'lendo').length;
       document.getElementById("stFav").innerText = books.filter(b => b.favorito).length;
-      const media = books.length ? (books.reduce((a,b) => a + (b.estrelas || 0), 0) / books.length).toFixed(1) : "0.0";
+      
+      const media = lidos.length ? (lidos.reduce((a,b) => a + (b.estrelas || 0), 0) / lidos.length).toFixed(1) : "0.0";
       document.getElementById("stMedia").innerText = media;
 
       const years = [...new Set(books.map(b => b.year || new Date().getFullYear()))].sort((a,b) => b - a);
+      
       years.forEach(year => {
         const section = document.createElement("div");
         section.innerHTML = `<h2 class="year-header">${year}</h2><div class="books-grid" id="grid-${year}"></div>`;
         container.appendChild(section);
+        
         books.filter(b => (b.year || new Date().getFullYear()) == year).forEach(book => {
           const card = document.createElement("div");
           card.className = "book-card";
           card.innerHTML = `
-            <img src="${book.capa || 'https://i.ibb.co/C07F1kL/placeholder-book-cover.png'}">
+            <img src="${book.capa || 'https://i.ibb.co/C07F1kL/placeholder-book-cover.png'}" loading="lazy">
             <h3 style="font-size:1.1rem; margin:0 0 8px;">${book.title || 'Sem Título'}</h3>
             <div class="stars">${renderStarsHtml(book.estrelas || 0)}</div>
             <div class="book-actions">
@@ -404,18 +424,23 @@
               <button class="del-btn">🗑️</button>
             </div>
           `;
+          
           card.querySelector(".del-btn").onclick = function() {
             if (!this.classList.contains("warning")) {
               this.classList.add("warning");
               setTimeout(() => this.classList.remove("warning"), 2500);
             } else {
               books = books.filter(b => b.id !== book.id);
-              salvar(); renderBooks();
+              salvar();
             }
           };
-          card.querySelector(".fav-btn").onclick = () => { book.favorito = !book.favorito; salvar(); renderBooks(); };
+          
+          card.querySelector(".fav-btn").onclick = () => { book.favorito = !book.favorito; salvar(); };
+          
           card.querySelector(".edit-btn").onclick = () => {
-            editId = book.id; selectedStars = book.estrelas; selectedImage = book.capa;
+            editId = book.id; 
+            selectedStars = book.estrelas; 
+            selectedImage = book.capa;
             document.getElementById("inputTitle").value = book.title;
             document.getElementById("inputPages").value = book.pages;
             document.getElementById("inputYear").value = book.year;
@@ -423,15 +448,57 @@
             atualizarEstrelasVisual();
             document.getElementById("modal").classList.add("show");
           };
+          
           document.getElementById(`grid-${year}`).appendChild(card);
         });
       });
     }
 
+    // Função de compressão de imagem para aguentar os PRINTS
+    function comprimirImagem(file, callback) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const max_size = 450; // Tamanho ideal para capa de livro
+
+                if (width > height) {
+                    if (width > max_size) {
+                        height *= max_size / width;
+                        width = max_size;
+                    }
+                } else {
+                    if (height > max_size) {
+                        width *= max_size / height;
+                        height = max_size;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                // Converte para JPG leve (0.6 de qualidade)
+                callback(canvas.toDataURL('image/jpeg', 0.6));
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    document.getElementById("bookFile").onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      comprimirImagem(file, (base64) => {
+          selectedImage = base64;
+      });
+    };
+
     document.querySelectorAll("#starsSelect span").forEach((s, i) => {
       s.onclick = () => {
         let val = i + 1;
-        // Se clicar no valor atual, vira meia estrela. Se clicar de novo na meia estrela, zera.
         if (selectedStars === val) selectedStars = val - 0.5;
         else if (selectedStars === (val - 0.5)) selectedStars = 0;
         else selectedStars = val;
@@ -452,19 +519,12 @@
       editId = null; selectedStars = 0; selectedImage = "";
       document.getElementById("inputTitle").value = "";
       document.getElementById("inputPages").value = "";
+      document.getElementById("bookFile").value = "";
       atualizarEstrelasVisual();
       document.getElementById("modal").classList.add("show");
     };
 
     document.getElementById("closeModal").onclick = () => document.getElementById("modal").classList.remove("show");
-
-    document.getElementById("bookFile").onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => { selectedImage = reader.result; };
-      reader.readAsDataURL(file);
-    };
 
     document.getElementById("saveBook").onclick = () => {
       const data = {
@@ -475,9 +535,15 @@
         estrelas: selectedStars,
         capa: selectedImage || "https://i.ibb.co/C07F1kL/placeholder-book-cover.png"
       };
-      if(editId) Object.assign(books.find(x => x.id === editId), data);
-      else books.unshift({ id: crypto.randomUUID(), favorito: false, ...data });
-      salvar(); renderBooks();
+
+      if(editId) {
+          const index = books.findIndex(x => x.id === editId);
+          if(index !== -1) books[index] = { ...books[index], ...data };
+      } else {
+          books.unshift({ id: crypto.randomUUID(), favorito: false, ...data });
+      }
+      
+      salvar();
       document.getElementById("modal").classList.remove("show");
     };
 
