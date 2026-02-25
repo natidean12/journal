@@ -197,21 +197,36 @@
   </div>
 
   <script>
-    const alphabetGrid = document.getElementById("alphabetGrid");
+const alphabetGrid = document.getElementById("alphabetGrid");
     const letters = Array.from({length:26}, (_,i)=>String.fromCharCode(65+i));
-    let estadoAZ = JSON.parse(localStorage.getItem("moniteca_az_v1") || "{}");
+    
+    // Tenta carregar os dados, se falhar limpa para não travar o app
+    let estadoAZ;
+    try {
+        estadoAZ = JSON.parse(localStorage.getItem("moniteca_az_v1") || "{}");
+    } catch(e) {
+        estadoAZ = {};
+    }
+
     let clickTimer = null;
 
     function salvar() {
-      localStorage.setItem("moniteca_az_v1", JSON.stringify(estadoAZ));
-      render();
+      try {
+        localStorage.setItem("moniteca_az_v1", JSON.stringify(estadoAZ));
+        render();
+      } catch (e) {
+        alert("Ops! O armazenamento está cheio. Tente uma foto menor ou apague algumas antigas.");
+        console.error("Erro ao salvar:", e);
+      }
     }
 
     function render() {
+      if(!alphabetGrid) return;
       alphabetGrid.innerHTML = "";
-      const total = Object.keys(estadoAZ).length;
       
+      const total = Object.keys(estadoAZ).length;
       const perc = (total / 26) * 100;
+      
       const fill = document.getElementById("progressFill");
       if(fill) fill.style.width = perc + "%";
       
@@ -230,6 +245,7 @@
           </div>
         `;
 
+        // Lógica de clique: 1 clique abre/zoom, 2 cliques rápidos apaga
         card.onclick = (e) => {
             if (clickTimer == null) {
                 clickTimer = setTimeout(function () {
@@ -240,12 +256,14 @@
                     } else {
                         abrirCamera(letter);
                     }
-                }, 250);
+                }, 300);
             } else {
                 clearTimeout(clickTimer);
                 clickTimer = null;
-                delete estadoAZ[letter];
-                salvar();
+                if(confirm(`Deseja remover a foto da letra ${letter}?`)) {
+                    delete estadoAZ[letter];
+                    salvar();
+                }
             }
         };
 
@@ -255,18 +273,40 @@
 
     function abrirCamera(letter) {
       const input = document.createElement("input");
-      input.type = "file"; input.accept = "image/*";
-      input.onchange = () => {
+      input.type = "file"; 
+      input.accept = "image/*";
+      
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
         const reader = new FileReader();
-        reader.onload = () => {
-          estadoAZ[letter] = reader.result;
-          salvar();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            // REDIMENSIONAMENTO: Mantém a foto leve
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 600; // Tamanho máximo para não estourar o espaço
+            const scaleSize = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Converte para JPEG com qualidade 0.7 (fica leve e bonito)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            estadoAZ[letter] = dataUrl;
+            salvar();
+          };
+          img.src = event.target.result;
         };
-        reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(file);
       };
       input.click();
     }
 
+    // Inicia o app
     render();
   </script>
 </body>
