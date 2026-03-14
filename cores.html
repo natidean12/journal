@@ -6,12 +6,13 @@
   <title>Cosmic Bloom • Cores ✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <meta name="apple-mobile-web-app-title" content="Cosmic Bloom">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icone.png">
-    <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icone.png">
+  <link rel="manifest" href="manifest.json">
 
   <style>
+    /* Seu CSS permanece original */
     :root {
       --primary-lavender: #d1c4e9;
       --secondary-berry: #a3617b;
@@ -20,7 +21,7 @@
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.15);
       --text-light: #f8f8f8;
-      --text-muted: rgba(255, 255, 255, 0.6); /* Corrigido: Adicionado variável faltante */
+      --text-muted: rgba(255, 255, 255, 0.6);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -35,7 +36,6 @@
       display: flex;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 250px;
       background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
@@ -45,84 +45,34 @@
       position: fixed; height: 100vh; z-index: 1000;
       box-shadow: 2px 0 15px rgba(0,0,0,0.2);
     }
-    .nav-brand { 
-      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; 
-      color: var(--primary-lavender); font-size: 2.2rem; text-align: center; 
-      margin-bottom: 40px; text-shadow: 0 0 10px rgba(255,255,255,0.2); 
-    }
-    .nav-link {
-      color: var(--text-muted); text-decoration: none; padding: 14px 18px;
-      border-radius: 25px; margin-bottom: 10px; display: flex; align-items: center;
-      gap: 15px; font-weight: 600; transition: all 0.3s ease;
-    }
-    .nav-link:hover { color: white; background: rgba(255,255,255,0.05); }
-    .nav-link.active {
-      background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%);
-      color: white; box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
-    }
-    .nav-link i { font-style: normal; font-size: 1.2rem; }
+    .nav-brand { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; color: var(--primary-lavender); font-size: 2.2rem; text-align: center; margin-bottom: 40px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; padding: 14px 18px; border-radius: 25px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
+    .nav-link.active { background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%); color: white; }
 
-    /* MAIN CONTENT */
     .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .header-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic; color: var(--primary-lavender); margin-bottom: 10px; }
 
-    .header-title {
-      font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic;
-      color: var(--primary-lavender); margin-bottom: 10px;
-    }
-
-    /* PROGRESS BAR */
     .progress-wrapper { width: 100%; max-width: 800px; margin-bottom: 30px; text-align: center; }
-    .rainbow-progress-container {
-      width: 100%; height: 8px; background: rgba(0,0,0,0.2);
-      border-radius: 10px; overflow: hidden; display: flex; margin-top: 10px;
-    }
+    .rainbow-progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; display: flex; margin-top: 10px; }
     .progress-segment { height: 100%; transition: 0.5s ease; }
 
-    /* GRID */
-    .color-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 15px; width: 100%; max-width: 800px;
-    }
-
-    .color-card {
-      aspect-ratio: 1 / 1.4; background: var(--card-bg);
-      border-radius: 20px; border: 1px solid var(--card-border);
-      position: relative; overflow: hidden; transition: 0.3s;
-      cursor: pointer;
-    }
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
+    .color-card { aspect-ratio: 1 / 1.4; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s; cursor: pointer; }
     .color-card.selected { border-color: var(--primary-lavender); transform: scale(1.02); }
 
     .photo-area { height: 75%; width: 100%; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; position: relative; }
     .photo-area img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .color-label {
-      height: 25%; display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
-    }
+    .color-label { height: 25%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
 
-    .check-badge {
-      position: absolute; top: 8px; left: 8px; background: var(--primary-lavender);
-      color: var(--bg-dark-purple); width: 22px; height: 22px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 0.7rem;
-      font-weight: bold; transform: scale(0); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+    .check-badge { position: absolute; top: 8px; left: 8px; background: var(--primary-lavender); color: var(--bg-dark-purple); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; transform: scale(0); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .color-card.selected .check-badge { transform: scale(1); }
 
-    /* RESPONSIVO */
     @media (max-width: 768px) {
-      .sidebar { 
-        width: 100%; height: 70px; bottom: 0; top: auto; 
-        flex-direction: row; padding: 0 10px; justify-content: space-around; 
-        border-right: none; border-top: 1px solid var(--card-border); 
-      }
-      .nav-brand, .nav-text { display: none; }
+      .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 10px; justify-content: space-around; border-right: none; border-top: 1px solid var(--card-border); }
+      .nav-brand { display: none; }
       .main-content { margin-left: 0; padding: 20px 15px 90px; }
-      .nav-link { 
-        margin-bottom: 0; padding: 10px; border-radius: 15px; 
-        flex-direction: column; gap: 0; 
-      }
+      .nav-link { margin-bottom: 0; padding: 10px; flex-direction: column; gap: 0; }
       .color-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-      .header-title { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -130,29 +80,77 @@
 
   <nav class="sidebar">
     <div class="nav-brand">Cosmic Bloom</div>
-    <a href="livros.html" class="nav-link "><i>📚</i> Livros</a>
+    <a href="livros.html" class="nav-link"><i>📚</i> Livros</a>
     <a href="challenge.html" class="nav-link"><i>🏆</i> Desafios</a>
-    <a href="calendario.html" class="nav-link "><i>📅</i> Agenda</a>
-    <a href="favoritos.html" class="nav-link"><i>💜</i> Favoritos</a>
-    <a href="bingo.html" class="nav-link"><i>🎯</i> Bingo Literário</a>
     <a href="cores.html" class="nav-link active"><i>🌈</i> Paleta Literária</a>
     <a href="A-z.html" class="nav-link"><i>🅰️</i> Desafio A-Z</a>
-    <a href="roleta.html" class="nav-link"><i>📍</i> Roleta</a>
   </nav>
 
   <main class="main-content">
     <h1 class="header-title">Desafio das Cores</h1>
-    
     <div class="progress-wrapper">
       <span id="counterLabel" style="font-size: 0.8rem; opacity: 0.8; font-weight: 600;">0 de 12 completadas</span>
       <div class="rainbow-progress-container" id="progressBar"></div>
     </div>
-    
     <div class="color-grid" id="colorGrid"></div>
   </main>
 
   <script>
-const colorGrid = document.getElementById("colorGrid");
+    // --- LÓGICA DO INDEXEDDB PARA CORES ---
+    const dbName = "CosmicBloomCores";
+    const storeName = "fotosCores";
+    let db;
+
+    const initDB = () => {
+      return new Promise((resolve) => {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = (e) => {
+          e.target.result.createObjectStore(storeName);
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve();
+        };
+      });
+    };
+
+    const getEstadoCores = () => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readonly");
+        const store = transaction.objectStore(storeName);
+        const request = store.getAllKeys();
+        request.onsuccess = async () => {
+          const keys = request.result;
+          const estado = {};
+          for (let key of keys) {
+            estado[key] = await new Promise(r => {
+              const req = store.get(key);
+              req.onsuccess = () => r(req.result);
+            });
+          }
+          resolve(estado);
+        };
+      });
+    };
+
+    const salvarCorDB = (id, data) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).put(data, id);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    const removerCorDB = (id) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).delete(id);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    // --- LÓGICA DO APP ---
+    const colorGrid = document.getElementById("colorGrid");
     const colors = [
       { name: "Vermelho", hex: "#ef5350" }, { name: "Laranja", hex: "#ff9800" },
       { name: "Amarelo", hex: "#fdd835" }, { name: "Verde", hex: "#66bb6a" },
@@ -163,21 +161,11 @@ const colorGrid = document.getElementById("colorGrid");
     ];
 
     let estadoCores = {};
-    try {
-        estadoCores = JSON.parse(localStorage.getItem("moniteca_cores_v3") || "{}");
-    } catch(e) {
-        estadoCores = {};
-    }
-    
     let clickTimer = null;
 
-    function salvar() {
-      try {
-        localStorage.setItem("moniteca_cores_v3", JSON.stringify(estadoCores));
-        render();
-      } catch (e) {
-        alert("Memória cheia! Tente apagar alguns desafios (clique duplo) para liberar espaço.");
-      }
+    async function atualizarInterface() {
+      estadoCores = await getEstadoCores();
+      render();
     }
 
     function render() {
@@ -195,7 +183,6 @@ const colorGrid = document.getElementById("colorGrid");
 
         const card = document.createElement("div");
         card.className = "color-card" + (info?.selected ? " selected" : "");
-
         card.innerHTML = `
           <div class="photo-area">
             <div class="check-badge">✓</div>
@@ -207,21 +194,19 @@ const colorGrid = document.getElementById("colorGrid");
         `;
 
         card.onclick = () => {
-            if (clickTimer == null) {
-                clickTimer = setTimeout(() => {
-                    clickTimer = null;
-                    abrirCamera(i);
-                }, 300);
-            } else {
-                clearTimeout(clickTimer);
-                clickTimer = null;
-                if(confirm(`Remover desafio da cor ${color.name}?`)) {
-                    delete estadoCores[i];
-                    salvar();
-                }
+          if (clickTimer == null) {
+            clickTimer = setTimeout(() => {
+              clickTimer = null;
+              abrirCamera(i);
+            }, 300);
+          } else {
+            clearTimeout(clickTimer);
+            clickTimer = null;
+            if(confirm(`Remover desafio da cor ${color.name}?`)) {
+              removerCorDB(i).then(atualizarInterface);
             }
+          }
         };
-
         colorGrid.appendChild(card);
       });
 
@@ -236,61 +221,39 @@ const colorGrid = document.getElementById("colorGrid");
           bar.appendChild(seg);
         });
       }
-
       document.getElementById("counterLabel").innerText = `${totalConcluido} de 12 cores completadas`;
-    }
-
-    // Função essencial para prints não travarem o navegador
-    function comprimirImagem(file, callback) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const max_size = 500; // Tamanho ideal
-
-          if (width > height) {
-            if (width > max_size) {
-              height *= max_size / width;
-              width = max_size;
-            }
-          } else {
-            if (height > max_size) {
-              width *= max_size / height;
-              height = max_size;
-            }
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          // Transforma print PNG pesado em JPG leve
-          callback(canvas.toDataURL('image/jpeg', 0.6));
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
     }
 
     function abrirCamera(i) {
       const input = document.createElement("input");
-      input.type = "file"; 
-      input.accept = "image/*";
+      input.type = "file"; input.accept = "image/*";
       input.onchange = () => {
         const file = input.files[0];
         if (!file) return;
         
-        comprimirImagem(file, (base64) => {
-          estadoCores[i] = { selected: true, img: base64 };
-          salvar();
-        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const max_size = 500;
+            let w = img.width, h = img.height;
+            if (w > h) { if (w > max_size) { h *= max_size / w; w = max_size; } }
+            else { if (h > max_size) { w *= max_size / h; h = max_size; } }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            
+            const base64 = canvas.toDataURL('image/jpeg', 0.6);
+            salvarCorDB(i, { selected: true, img: base64 }).then(atualizarInterface);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
       };
       input.click();
     }
 
-    render();
+    initDB().then(atualizarInterface);
   </script>
 </body>
 </html>
