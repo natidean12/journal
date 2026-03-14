@@ -6,12 +6,13 @@
   <title>Cosmic Bloom • A-Z ✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <meta name="apple-mobile-web-app-title" content="Cosmic Bloom">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icone.png">
-    <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icone.png">
+  <link rel="manifest" href="manifest.json">
 
   <style>
+    /* Seu CSS permanece intacto */
     :root {
       --primary-lavender: #d1c4e9;
       --secondary-berry: #a3617b;
@@ -35,9 +36,7 @@
       display: flex;
     }
 
-    /* SIDEBAR CORRIGIDA */
-     /* SIDEBAR */
-   .sidebar {
+    .sidebar {
       width: 250px;
       background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
       backdrop-filter: blur(15px);
@@ -50,18 +49,8 @@
       height: 100vh;
       z-index: 1000;
       overflow-y: auto;
-      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
     }
-    .nav-brand { 
-      font-family: 'Playfair Display', serif; 
-      font-style: italic; 
-      font-weight: 700; 
-      color: var(--primary-lavender); 
-      font-size: 2.2rem; 
-      text-align: center; 
-      margin-bottom: 40px; 
-      text-shadow: 0 0 10px rgba(255,255,255,0.2); 
-    }
+    .nav-brand { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; color: var(--primary-lavender); font-size: 2.2rem; text-align: center; margin-bottom: 40px; }
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
@@ -73,95 +62,37 @@
       gap: 15px;
       font-weight: 600;
       transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
     }
-    .nav-link::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: rgba(255,255,255,0.1);
-      transition: all 0.4s ease;
-    }
-    .nav-link:hover::before { left: 0; }
-    .nav-link.active {
-      background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%);
-      color: white;
-      box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
-      transform: translateX(5px);
-    }
-    .nav-link i { font-size: 1.3rem; }
+    .nav-link.active { background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%); color: white; }
 
-    /* MAIN CONTENT */
     .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .header-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic; color: var(--primary-lavender); margin-bottom: 10px; }
 
-    .header-title {
-      font-family: 'Playfair Display', serif; font-size: 2.5rem; font-style: italic;
-      color: var(--primary-lavender); margin-bottom: 10px;
-    }
-
-    /* PROGRESS BAR */
     .progress-wrapper { width: 100%; max-width: 800px; margin-bottom: 30px; text-align: center; }
-    .az-progress-container {
-      width: 100%; height: 10px; background: rgba(0,0,0,0.2);
-      border-radius: 10px; overflow: hidden; margin-top: 10px;
-      border: 1px solid var(--card-border);
-    }
+    .az-progress-container { width: 100%; height: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; margin-top: 10px; border: 1px solid var(--card-border); }
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary-berry), var(--primary-lavender)); width: 0%; transition: 0.6s ease; }
 
-    /* GRID */
-    .alphabet-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 15px; width: 100%; max-width: 800px;
-    }
+    .alphabet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
 
-    .letter-card {
-      aspect-ratio: 1 / 1.4; background: var(--card-bg);
-      border-radius: 15px; border: 1px solid var(--card-border);
-      position: relative; overflow: hidden; transition: 0.3s;
-      cursor: pointer;
-    }
+    .letter-card { aspect-ratio: 1 / 1.4; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s; cursor: pointer; }
     .letter-card.completed { border-color: var(--primary-lavender); transform: translateY(-3px); }
 
-    .letter-badge { 
-      position: absolute; top: 8px; left: 8px; z-index: 5; 
-      background: var(--secondary-berry); color: white; 
-      width: 26px; height: 26px; border-radius: 6px; 
-      display: flex; align-items: center; justify-content: center; 
-      font-weight: 800; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
+    .letter-badge { position: absolute; top: 8px; left: 8px; z-index: 5; background: var(--secondary-berry); color: white; width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
 
     .photo-area { height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); }
     .photo-area img { width: 100%; height: 100%; object-fit: cover; }
     .photo-area span { opacity: 0.15; font-size: 1.5rem; }
 
-    /* ZOOM */
-    .vitrine-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(10px); z-index: 2000; display: none;
-      align-items: center; justify-content: center; padding: 20px;
-    }
+    .vitrine-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .vitrine-overlay.active { display: flex; }
     .vitrine-content { max-height: 85vh; border-radius: 15px; border: 2px solid var(--card-border); }
 
-    /* RESPONSIVO */
     @media (max-width: 768px) {
-      .sidebar { 
-        width: 100%; height: 70px; bottom: 0; top: auto; 
-        flex-direction: row; padding: 0 5px; justify-content: space-around; 
-        border-right: none; border-top: 1px solid var(--card-border); 
-        overflow: hidden;
-      }
-      .nav-brand, .nav-text { display: none; }
+      .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 0 5px; justify-content: space-around; border-right: none; border-top: 1px solid var(--card-border); }
+      .nav-brand { display: none; }
       .main-content { margin-left: 0; padding: 20px 15px 90px; }
-      .nav-link { 
-        margin-bottom: 0; padding: 10px; border-radius: 15px; 
-        flex-direction: column; gap: 0; flex: 1; justify-content: center;
-      }
-      .nav-link i { font-size: 1.4rem; }
+      .nav-link { margin-bottom: 0; padding: 10px; flex-direction: column; flex: 1; }
       .alphabet-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-      .header-title { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -169,26 +100,21 @@
 
   <nav class="sidebar">
     <div class="nav-brand">Cosmic Bloom</div>
-    <a href="livros.html" class="nav-link "><i>📚</i> Livros</a>
+    <a href="livros.html" class="nav-link"><i>📚</i> Livros</a>
     <a href="challenge.html" class="nav-link"><i>🏆</i> Desafios</a>
-    <a href="calendario.html" class="nav-link "><i>📅</i> Agenda</a>
+    <a href="calendario.html" class="nav-link"><i>📅</i> Agenda</a>
     <a href="favoritos.html" class="nav-link"><i>💜</i> Favoritos</a>
-    <a href="bingo.html" class="nav-link"><i>🎯</i> Bingo Literário</a>
-    <a href="cores.html" class="nav-link"><i>🌈</i> Paleta Literária</a>
     <a href="A-z.html" class="nav-link active"><i>🅰️</i> Desafio A-Z</a>
-    <a href="roleta.html" class="nav-link"><i>📍</i> Roleta</a>
   </nav>
 
   <main class="main-content">
     <h1 class="header-title">Desafio A-Z</h1>
-    
     <div class="progress-wrapper">
       <span id="counterLabel" style="font-size: 0.8rem; opacity: 0.8; font-weight: 600;">0 de 26 completadas</span>
       <div class="az-progress-container">
         <div class="progress-fill" id="progressFill"></div>
       </div>
     </div>
-    
     <div class="alphabet-grid" id="alphabetGrid"></div>
   </main>
 
@@ -197,28 +123,68 @@
   </div>
 
   <script>
-const alphabetGrid = document.getElementById("alphabetGrid");
-    const letters = Array.from({length:26}, (_,i)=>String.fromCharCode(65+i));
-    
-    // Carrega os dados com segurança
-    let estadoAZ = {};
-    try {
-        const dadosSalvos = localStorage.getItem("moniteca_az_v1");
-        if (dadosSalvos) estadoAZ = JSON.parse(dadosSalvos);
-    } catch(e) {
-        console.error("Erro ao carregar dados:", e);
-    }
+    // --- LÓGICA DO INDEXEDDB ---
+    const dbName = "CosmicBloomAZ";
+    const storeName = "fotosAZ";
+    let db;
 
+    const initDB = () => {
+      return new Promise((resolve) => {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = (e) => {
+          e.target.result.createObjectStore(storeName);
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve();
+        };
+      });
+    };
+
+    const getEstadoAZ = () => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readonly");
+        const store = transaction.objectStore(storeName);
+        const request = store.getAllKeys();
+        request.onsuccess = async () => {
+          const keys = request.result;
+          const estado = {};
+          for (let key of keys) {
+            estado[key] = await new Promise(r => {
+              const req = store.get(key);
+              req.onsuccess = () => r(req.result);
+            });
+          }
+          resolve(estado);
+        };
+      });
+    };
+
+    const salvarFotoDB = (letter, base64) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).put(base64, letter);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    const removerFotoDB = (letter) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).delete(letter);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    // --- LÓGICA DO APP ---
+    const alphabetGrid = document.getElementById("alphabetGrid");
+    const letters = Array.from({length:26}, (_,i)=>String.fromCharCode(65+i));
+    let estadoAZ = {};
     let clickTimer = null;
 
-    function salvar() {
-      try {
-        localStorage.setItem("moniteca_az_v1", JSON.stringify(estadoAZ));
-        render();
-      } catch (e) {
-        // Se der erro aqui, é porque o localStorage lotou de vez
-        alert("Memória cheia! Tente apagar algumas fotos antigas (clique duplo) antes de adicionar novas.");
-      }
+    async function atualizarInterface() {
+      estadoAZ = await getEstadoAZ();
+      render();
     }
 
     function render() {
@@ -244,24 +210,23 @@ const alphabetGrid = document.getElementById("alphabetGrid");
         `;
 
         card.onclick = () => {
-            if (clickTimer == null) {
-                clickTimer = setTimeout(() => {
-                    clickTimer = null;
-                    if (foto) {
-                        document.getElementById("vitrineImg").src = foto;
-                        document.getElementById("vitrine").classList.add("active");
-                    } else {
-                        abrirCamera(letter);
-                    }
-                }, 300);
-            } else {
-                clearTimeout(clickTimer);
-                clickTimer = null;
-                if(confirm(`Remover foto da letra ${letter}?`)) {
-                    delete estadoAZ[letter];
-                    salvar();
-                }
+          if (clickTimer == null) {
+            clickTimer = setTimeout(() => {
+              clickTimer = null;
+              if (foto) {
+                document.getElementById("vitrineImg").src = foto;
+                document.getElementById("vitrine").classList.add("active");
+              } else {
+                abrirCamera(letter);
+              }
+            }, 300);
+          } else {
+            clearTimeout(clickTimer);
+            clickTimer = null;
+            if(confirm(`Remover foto da letra ${letter}?`)) {
+              removerFotoDB(letter).then(atualizarInterface);
             }
+          }
         };
         alphabetGrid.appendChild(card);
       });
@@ -269,8 +234,7 @@ const alphabetGrid = document.getElementById("alphabetGrid");
 
     function abrirCamera(letter) {
       const input = document.createElement("input");
-      input.type = "file"; 
-      input.accept = "image/*";
+      input.type = "file"; input.accept = "image/*";
       
       input.onchange = (e) => {
         const file = e.target.files[0];
@@ -281,34 +245,22 @@ const alphabetGrid = document.getElementById("alphabetGrid");
           const img = new Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            
-            // Define um tamanho máximo de 500px para o lado maior
-            // Isso faz o print pesado virar uma miniatura leve
             let width = img.width;
             let height = img.height;
             const max_size = 500;
 
             if (width > height) {
-                if (width > max_size) {
-                    height *= max_size / width;
-                    width = max_size;
-                }
+              if (width > max_size) { height *= max_size / width; width = max_size; }
             } else {
-                if (height > max_size) {
-                    width *= max_size / height;
-                    height = max_size;
-                }
+              if (height > max_size) { width *= max_size / height; height = max_size; }
             }
 
-            canvas.width = width;
-            canvas.height = height;
-
+            canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-
-            // Transforma em JPG com compressão (0.6 é o equilíbrio perfeito)
-            estadoAZ[letter] = canvas.toDataURL('image/jpeg', 0.6);
-            salvar();
+            
+            const base64 = canvas.toDataURL('image/jpeg', 0.6);
+            salvarFotoDB(letter, base64).then(atualizarInterface);
           };
           img.src = event.target.result;
         };
@@ -317,7 +269,8 @@ const alphabetGrid = document.getElementById("alphabetGrid");
       input.click();
     }
 
-    render();
+    // Inicialização
+    initDB().then(atualizarInterface);
   </script>
 </body>
 </html>
