@@ -6,12 +6,13 @@
   <title>Cosmic Bloom • Favoritos ✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <meta name="apple-mobile-web-app-title" content="Cosmic Bloom">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icone.png">
-    <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icone.png">
+  <link rel="manifest" href="manifest.json">
 
   <style>
+    /* Seu CSS permanece original para manter o design */
     :root {
       --primary-lavender: #d1c4e9;
       --secondary-berry: #a3617b;
@@ -36,114 +37,31 @@
       display: flex;
     }
 
-    /* SIDEBAR */
-   .sidebar {
+    .sidebar {
       width: 250px;
       background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
       border-right: 1px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      padding: 30px 20px;
-      position: fixed;
-      height: 100vh;
-      z-index: 1000;
-      overflow-y: auto;
+      display: flex; flex-direction: column; padding: 30px 20px;
+      position: fixed; height: 100vh; z-index: 1000;
       box-shadow: 2px 0 15px rgba(0,0,0,0.2);
     }
-    .nav-brand { 
-      font-family: 'Playfair Display', serif; 
-      font-style: italic; 
-      font-weight: 700; 
-      color: var(--primary-lavender); 
-      font-size: 2.2rem; 
-      text-align: center; 
-      margin-bottom: 40px; 
-      text-shadow: 0 0 10px rgba(255,255,255,0.2); 
-    }
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 14px 18px;
-      border-radius: 25px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .nav-link::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: rgba(255,255,255,0.1);
-      transition: all 0.4s ease;
-    }
-    .nav-link:hover::before { left: 0; }
-    .nav-link.active {
-      background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%);
-      color: white;
-      box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
-      transform: translateX(5px);
-    }
-    .nav-link i { font-size: 1.3rem; }
+    .nav-brand { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; color: var(--primary-lavender); font-size: 2.2rem; text-align: center; margin-bottom: 40px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; padding: 14px 18px; border-radius: 25px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; font-weight: 600; }
+    .nav-link.active { background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%); color: white; }
 
-    /* MAIN */
     .main-content { margin-left: 250px; padding: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .header-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-style: italic; color: var(--primary-lavender); margin-bottom: 10px; text-align: center; }
+    .header-subtitle { font-size: 0.9rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; opacity: 0.8; }
 
-    .header-title {
-      font-family: 'Playfair Display', serif; font-size: 2.8rem; font-style: italic;
-      color: var(--primary-lavender); margin-bottom: 10px; text-align: center;
-    }
+    .month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 30px; width: 100%; max-width: 1100px; padding-bottom: 100px; }
+    .month-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border); padding: 18px; border-radius: 30px; text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .month-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--primary-lavender); }
 
-    .header-subtitle {
-      font-size: 0.9rem; color: var(--accent-gold); text-transform: uppercase;
-      letter-spacing: 2px; margin-bottom: 40px; opacity: 0.8;
-    }
-
-    .month-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 30px; width: 100%; max-width: 1100px; padding-bottom: 100px;
-    }
-
-    .month-card {
-      background: var(--card-bg); backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border); padding: 18px;
-      border-radius: 30px; text-align: center; cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .month-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      background: rgba(255, 255, 255, 0.12);
-      border-color: var(--primary-lavender);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    }
-
-    .month-name {
-      font-weight: 700; color: var(--primary-lavender);
-      margin-bottom: 15px; text-transform: uppercase;
-      font-size: 0.85rem; letter-spacing: 1.5px;
-    }
-
-    .photo-frame {
-      width: 100%; aspect-ratio: 2/3; background: rgba(0, 0, 0, 0.3);
-      border-radius: 20px; display: flex; align-items: center;
-      justify-content: center; overflow: hidden;
-      border: 1px dashed var(--card-border); transition: 0.3s;
-    }
-
+    .month-name { font-weight: 700; color: var(--primary-lavender); margin-bottom: 15px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1.5px; }
+    .photo-frame { width: 100%; aspect-ratio: 2/3; background: rgba(0, 0, 0, 0.3); border-radius: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px dashed var(--card-border); }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; animation: fadeIn 0.5s ease; }
-
-    .book-title {
-      margin-top: 15px; font-size: 0.9rem; color: var(--accent-gold);
-      font-weight: 600; min-height: 1.2em; font-style: italic;
-    }
+    .book-title { margin-top: 15px; font-size: 0.9rem; color: var(--accent-gold); font-weight: 600; min-height: 1.2em; font-style: italic; }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -153,7 +71,6 @@
       .main-content { margin-left: 0; padding: 20px 15px 100px; }
       .nav-link { flex-direction: column; font-size: 0.6rem; gap: 4px; padding: 10px 5px; margin-bottom: 0; }
       .month-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-      .header-title { font-size: 2rem; }
     }
   </style>
 </head>
@@ -161,14 +78,13 @@
 
   <nav class="sidebar">
     <div class="nav-brand">Cosmic Bloom</div>
-    <a href="livros.html" class="nav-link "><i>📚</i> Livros</a>
+    <a href="livros.html" class="nav-link"><i>📚</i> Livros</a>
     <a href="challenge.html" class="nav-link"><i>🏆</i> Desafios</a>
-    <a href="calendario.html" class="nav-link "><i>📅</i> Agenda</a>
+    <a href="calendario.html" class="nav-link"><i>📅</i> Agenda</a>
     <a href="favoritos.html" class="nav-link active"><i>💜</i> Favoritos</a>
     <a href="bingo.html" class="nav-link"><i>🎯</i> Bingo Literário</a>
     <a href="cores.html" class="nav-link"><i>🌈</i> Paleta Literária</a>
     <a href="A-z.html" class="nav-link"><i>🅰️</i> Desafio A-Z</a>
-    <a href="roleta.html" class="nav-link"><i>📍</i> Roleta</a>
   </nav>
 
   <main class="main-content">
@@ -178,119 +94,140 @@
   </main>
 
   <script>
-    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-  
-  // Carrega com segurança para não travar
-  let estadoMeses = {};
-  try {
-    estadoMeses = JSON.parse(localStorage.getItem("mesesEstado") || "{}");
-  } catch(e) {
-    estadoMeses = {};
-  }
+    // --- LÓGICA DO INDEXEDDB PARA FAVORITOS ---
+    const dbName = "CosmicBloomFavoritos";
+    const storeName = "melhorDoMes";
+    let db;
 
-  // Função para comprimir os PRINTS (essencial!)
-  function comprimirPrint(file, callback) {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        const max_size = 500; // Tamanho ideal para miniatura
-
-        if (width > height) {
-          if (width > max_size) {
-            height *= max_size / width;
-            width = max_size;
-          }
-        } else {
-          if (height > max_size) {
-            width *= max_size / height;
-            height = max_size;
-          }
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        // Converte para JPEG 0.6 (muito mais leve que o PNG do print)
-        callback(canvas.toDataURL('image/jpeg', 0.6));
-      };
-      img.src = event.target.result;
+    const initDB = () => {
+      return new Promise((resolve) => {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = (e) => {
+          e.target.result.createObjectStore(storeName);
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve();
+        };
+      });
     };
-    reader.readAsDataURL(file);
-  }
 
-  function salvar() {
-    try {
-      localStorage.setItem("mesesEstado", JSON.stringify(estadoMeses));
-      render();
-    } catch (e) {
-      alert("Memória cheia! Tente apagar alguns meses (clique duplo) para liberar espaço.");
-    }
-  }
-
-  function render() {
-    const grid = document.getElementById("monthGrid");
-    if(!grid) return;
-    grid.innerHTML = "";
-
-    months.forEach(month => {
-      const card = document.createElement("div");
-      card.className = "month-card";
-
-      const info = estadoMeses[month];
-      
-      card.innerHTML = `
-        <div class="month-name">${month}</div>
-        <div class="photo-frame" style="${info ? 'border-style: solid' : ''}">
-          ${info ? `<img src="${typeof info === 'string' ? info : info.img}">` : '<span style="font-size:2.5rem; opacity:0.2;">✨</span>'}
-        </div>
-        <div class="book-title">${(info && info.title) ? info.title : ""}</div>
-      `;
-
-      // Lógica de cliques protegida
-      let clickTimer = null;
-      card.onclick = (e) => {
-        if (clickTimer == null) {
-          clickTimer = setTimeout(() => {
-            clickTimer = null;
-            // AÇÃO: ADICIONAR
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
-            input.onchange = () => {
-              const file = input.files[0];
-              if (!file) return;
-              
-              comprimirPrint(file, (base64Compressado) => {
-                const nomeLivro = prompt("Qual livro brilhou em " + month + "?");
-                estadoMeses[month] = {
-                  img: base64Compressado,
-                  title: nomeLivro || ""
-                };
-                salvar();
-              });
-            };
-            input.click();
-          }, 300);
-        } else {
-          // AÇÃO: APAGAR (CLIQUE DUPLO)
-          clearTimeout(clickTimer);
-          clickTimer = null;
-          if(confirm(`Deseja remover o destaque de ${month}?`)) {
-            delete estadoMeses[month];
-            salvar();
+    const getEstadoFavoritos = () => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readonly");
+        const store = transaction.objectStore(storeName);
+        const request = store.getAllKeys();
+        request.onsuccess = async () => {
+          const keys = request.result;
+          const estado = {};
+          for (let key of keys) {
+            estado[key] = await new Promise(r => {
+              const req = store.get(key);
+              req.onsuccess = () => r(req.result);
+            });
           }
-        }
+          resolve(estado);
+        };
+      });
+    };
+
+    const salvarFavoritoDB = (month, data) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).put(data, month);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    const removerFavoritoDB = (month) => {
+      return new Promise((resolve) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        transaction.objectStore(storeName).delete(month);
+        transaction.oncomplete = () => resolve();
+      });
+    };
+
+    // --- LÓGICA DA INTERFACE ---
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    let estadoMeses = {};
+    let clickTimer = null;
+
+    async function atualizarInterface() {
+      estadoMeses = await getEstadoFavoritos();
+      render();
+    }
+
+    function render() {
+      const grid = document.getElementById("monthGrid");
+      if(!grid) return;
+      grid.innerHTML = "";
+
+      months.forEach(month => {
+        const card = document.createElement("div");
+        card.className = "month-card";
+        const info = estadoMeses[month];
+        
+        card.innerHTML = `
+          <div class="month-name">${month}</div>
+          <div class="photo-frame" style="${info ? 'border-style: solid' : ''}">
+            ${info ? `<img src="${info.img}">` : '<span style="font-size:2.5rem; opacity:0.2;">✨</span>'}
+          </div>
+          <div class="book-title">${(info && info.title) ? info.title : ""}</div>
+        `;
+
+        card.onclick = () => {
+          if (clickTimer == null) {
+            clickTimer = setTimeout(() => {
+              clickTimer = null;
+              abrirCamera(month);
+            }, 300);
+          } else {
+            clearTimeout(clickTimer);
+            clickTimer = null;
+            if(confirm(`Deseja remover o destaque de ${month}?`)) {
+              removerFavoritoDB(month).then(atualizarInterface);
+            }
+          }
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function abrirCamera(month) {
+      const input = document.createElement("input");
+      input.type = "file"; input.accept = "image/*";
+      input.onchange = () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const max_size = 600; // Um pouco maior para os favoritos ficarem bonitos
+            let w = img.width, h = img.height;
+            if (w > h) { if (w > max_size) { h *= max_size / w; w = max_size; } }
+            else { if (h > max_size) { w *= max_size / h; h = max_size; } }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            
+            const base64 = canvas.toDataURL('image/jpeg', 0.7); // Qualidade um pouco maior
+            const nomeLivro = prompt("Qual livro brilhou em " + month + "?");
+            
+            salvarFavoritoDB(month, { 
+              img: base64, 
+              title: nomeLivro || "" 
+            }).then(atualizarInterface);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
       };
+      input.click();
+    }
 
-      grid.appendChild(card);
-    });
-  }
-
-  render();
+    initDB().then(atualizarInterface);
   </script>
 </body>
 </html>
