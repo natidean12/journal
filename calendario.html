@@ -2,26 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Cosmic Calendar ✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
-<meta name="apple-mobile-web-app-title" content="Cosmic Bloom">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icone.png">
-    <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Cosmic Bloom">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="manifest.json">
   
   <style>
+    /* Paleta de cores em tom de rosa idêntica à tela principal */
     :root {
-      --primary-lavender: #d1c4e9;
-      --secondary-berry: #a3617b;
-      --accent-gold: #fbc02d;
-      --bg-dark-purple: #3a2b4f;
-      --bg-light-purple: #5c4b7d;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.15);
-      --text-light: #f8f8f8;
-      --text-muted: #e0e0e0;
+      --primary-rose: #fcaec1;      
+      --soft-pink: #fbc8d4;         
+      --vintage-gold: #cca05a;      
+      --bg-overlay: rgba(58, 29, 33, 0.65); 
+      --card-bg: rgba(255, 255, 255, 0.08); 
+      --card-border: rgba(251, 200, 212, 0.2);
+      --text-light: #fff2f5;
+      --text-muted: #fbc8d4;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -30,18 +30,21 @@
       margin: 0;
       font-family: 'Poppins', sans-serif;
       color: var(--text-light);
-      background: radial-gradient(circle at bottom left, var(--bg-light-purple) 0%, var(--bg-dark-purple) 100%);
+      /* Fundo estelar com overlay idêntico à tela de livros */
+      background: 
+        linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+        url("https://i.pinimg.com/1200x/1d/72/41/1d72416e266789afa33c189c365ded82.jpg") no-repeat center / cover;
       background-attachment: fixed;
       min-height: 100vh;
       display: flex;
     }
 
     /* SIDEBAR */
-   .sidebar {
+    .sidebar {
       width: 250px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      background: rgba(58, 29, 33, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-right: 1px solid var(--card-border);
       display: flex;
       flex-direction: column;
@@ -52,16 +55,18 @@
       overflow-y: auto;
       box-shadow: 2px 0 15px rgba(0,0,0,0.2);
     }
+    
     .nav-brand { 
       font-family: 'Playfair Display', serif; 
       font-style: italic; 
       font-weight: 700; 
-      color: var(--primary-lavender); 
+      color: var(--soft-pink); 
       font-size: 2.2rem; 
       text-align: center; 
       margin-bottom: 40px; 
-      text-shadow: 0 0 10px rgba(255,255,255,0.2); 
+      text-shadow: 0 0 15px rgba(251, 200, 212, 0.3); 
     }
+    
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
@@ -76,6 +81,7 @@
       position: relative;
       overflow: hidden;
     }
+    
     .nav-link::before {
       content: '';
       position: absolute;
@@ -84,11 +90,13 @@
       background: rgba(255,255,255,0.1);
       transition: all 0.4s ease;
     }
+    
     .nav-link:hover::before { left: 0; }
+    
     .nav-link.active {
-      background: linear-gradient(45deg, var(--secondary-berry) 0%, var(--primary-lavender) 100%);
-      color: white;
-      box-shadow: 0 8px 20px rgba(163, 97, 123, 0.4);
+      background: linear-gradient(135deg, var(--soft-pink), var(--primary-rose));
+      color: #3a1d21;
+      box-shadow: 0 8px 20px rgba(252, 174, 193, 0.3);
       transform: translateX(5px);
     }
     .nav-link i { font-size: 1.3rem; }
@@ -104,7 +112,7 @@
     }
 
     .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .calendar-header h2 { font-family: 'Playfair Display', serif; color: var(--primary-lavender); margin: 0; }
+    .calendar-header h2 { font-family: 'Playfair Display', serif; color: var(--soft-pink); margin: 0; }
     
     .btn-nav { 
       background: rgba(255,255,255,0.1); border: 1px solid var(--card-border); 
@@ -123,14 +131,16 @@
 
     /* DESTAQUE HOJE */
     .day.today {
-      border: 2px solid var(--accent-gold);
-      box-shadow: 0 0 15px rgba(251, 192, 45, 0.4);
+      border: 2px solid var(--vintage-gold);
+      box-shadow: 0 0 15px rgba(204, 160, 90, 0.4);
       font-weight: 800;
     }
 
+    /* Ajuste do preenchimento rosa quando marcado */
     .day.marked { 
-      background: linear-gradient(135deg, var(--secondary-berry), var(--bg-light-purple));
-      color: white; border: none;
+      background: linear-gradient(135deg, var(--soft-pink), var(--primary-rose));
+      color: #3a1d21; border: none;
+      font-weight: 600;
     }
 
     @keyframes fadeIn {
@@ -138,7 +148,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* NOVO SELETOR DE EMOJIS (CHIPS) */
+    /* CHIPS DE EMOJIS */
     .emoji-selector-horizontal {
       display: flex; gap: 10px; margin: 25px 0;
       background: var(--card-bg); padding: 10px; border-radius: 20px;
@@ -152,8 +162,8 @@
     }
 
     .emoji-chip.selected {
-      background: var(--secondary-berry);
-      border-color: var(--primary-lavender);
+      background: linear-gradient(135deg, var(--soft-pink), var(--primary-rose));
+      border-color: var(--soft-pink);
       transform: scale(1.1);
     }
 
@@ -163,16 +173,16 @@
     }
     
     .stat-mini { 
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
       padding: 20px; border-radius: 25px; text-align: center;
       border: 1px solid var(--card-border);
     }
     
-    .stat-mini span { display: block; font-size: 0.65rem; color: var(--primary-lavender); font-weight: bold; text-transform: uppercase; }
-    .stat-mini strong { font-size: 1.8rem; color: var(--accent-gold); }
+    .stat-mini span { display: block; font-size: 0.65rem; color: var(--soft-pink); font-weight: bold; text-transform: uppercase; }
+    .stat-mini strong { font-size: 1.8rem; color: #ffffff; }
 
     @media (max-width: 768px) {
-      .sidebar { width: 100%; height: 75px; bottom: 0; top: auto; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--card-border); }
+      .sidebar { width: 100%; height: 75px; bottom: 0; top: auto; flex-direction: row; padding: 0; border-right: none; border-top: 1px solid var(--card-border); background: rgba(58, 29, 33, 0.95); }
       .nav-brand { display: none; }
       .main-content { margin-left: 0; padding: 20px 15px 120px; }
       .nav-link { flex-direction: column; font-size: 0.6rem; gap: 2px; justify-content: center; margin-bottom: 0; }
@@ -183,7 +193,7 @@
 
   <nav class="sidebar">
     <div class="nav-brand">Cosmic Bloom</div>
-    <a href="livros.html" class="nav-link "><i>📚</i> Livros</a>
+    <a href="livros.html" class="nav-link"><i>📚</i> Livros</a>
     <a href="challenge.html" class="nav-link"><i>🏆</i> Desafios</a>
     <a href="calendario.html" class="nav-link active"><i>📅</i> Agenda</a>
     <a href="favoritos.html" class="nav-link"><i>💜</i> Favoritos</a>
@@ -225,6 +235,11 @@
   </main>
 
   <script>
+    // --- TRAVAR ZOOM GESTUAL NO IPAD (HOME SCREEN PWA) ---
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+
     let currentDate = new Date();
     let selectedEmoji = "📖";
     let habitData = JSON.parse(localStorage.getItem("moniteca_calendar")) || {};
@@ -269,7 +284,7 @@
 
         if (habitData[dayKey]) {
           dayDiv.classList.add("marked");
-          dayDiv.innerHTML = `<span style="font-size:0.7rem; opacity:0.8">${d}</span><span>${habitData[dayKey]}</span>`;
+          dayDiv.innerHTML = `<span style="font-size:0.7rem; opacity:0.8; display:block;">${d}</span><span>${habitData[dayKey]}</span>`;
         } else {
           dayDiv.innerText = d;
         }
